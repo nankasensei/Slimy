@@ -60,6 +60,7 @@ public class PlayerController : MonoBehaviour
         ProcessInputs();
         Move();
         Shoot();
+
     }
 
     private void OnDisable()
