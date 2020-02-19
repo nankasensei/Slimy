@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
     public AudioSource audioSourceBGM;
     public GameObject playerPrefab;
 
-    private int level =1;
+    public int level =1;
 
     // Start is called before the first frame update
     void Awake()
@@ -52,7 +52,12 @@ public class GameManager : MonoBehaviour
         GameObject player = Instantiate(playerPrefab);
         player.name = "Player";
         enemies.Clear();
-        boardScript.SetupScene(level);
+        if(level > 3)
+        {
+            boardScript.SetupBossScene();
+        }
+        else
+            boardScript.SetupScene(level);
         audioSource.Play();
     }
 

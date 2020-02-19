@@ -42,31 +42,6 @@ public class Tama : MonoBehaviour
                 }
             }
         }
-
-
-        //RaycastHit[] hits;
-        //hits = Physics.RaycastAll(transform.position, newPosition, (newPosition - transform.position).magnitude);
-        //foreach (RaycastHit hit in hits)
-        //{
-        //    GameObject other = hit.collider.gameObject;
-
-        //    if (other != player)
-        //    {
-        //        if (other.CompareTag("Enemy"))
-        //        {
-        //            Destroy(gameObject);
-        //            Debug.Log(other.name+" "+transform.position);
-        //            break;
-        //        }
-        //        if (other.CompareTag("OuterWall") || other.CompareTag("Exit") || other.CompareTag("Enter"))
-        //        {
-        //            Destroy(gameObject);
-        //            Debug.Log(other.name + " " + transform.position);
-        //            break;
-        //        }
-        //    }
-        //}
-
         transform.position = newPosition;
     }
 }

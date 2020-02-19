@@ -126,6 +126,7 @@ MonoBehaviour:
     type: 3}
   blurTile: {fileID: 5086428552885522984, guid: fe5858b1a228dc546933b6a84b866835,
     type: 3}
+  boss: {fileID: 8266598445519348993, guid: 589fdb970eb57c44d92c79de83ff3c36, type: 3}
   width: 23
   height: 13
   seed: 0
@@ -150,6 +151,7 @@ MonoBehaviour:
   audioSourceBGM: {fileID: 3796312096250953184}
   playerPrefab: {fileID: 3235989013604411370, guid: 2ac87ce293dc0cb46adf0dd250c1ca6a,
     type: 3}
+  level: 4
 --- !u!114 &942613183730629844
 MonoBehaviour:
   m_ObjectHideFlags: 0

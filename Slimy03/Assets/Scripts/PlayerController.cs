@@ -56,11 +56,9 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //Debug.Log(hp);
         ProcessInputs();
         Move();
-        Shoot();
-
+        ShootWithMouse();
     }
 
     private void OnDisable()
@@ -82,6 +80,23 @@ public class PlayerController : MonoBehaviour
         animator.SetFloat("Magnitude", movementDirection.magnitude);
 
         endOfAiming = Input.GetMouseButtonUp(0);
+
+        if (Input.GetKeyDown("joystick button 0"))
+        {
+            ShootWithGamepad(0, -1);
+        }
+        if (Input.GetKeyDown("joystick button 1"))
+        {
+            ShootWithGamepad(1, 0);
+        }
+        if (Input.GetKeyDown("joystick button 2"))
+        {
+            ShootWithGamepad(-1, 0);
+        }
+        if (Input.GetKeyDown("joystick button 3"))
+        {
+            ShootWithGamepad(0, 1);
+        }
     }
 
     public void SetHp(float offset)
@@ -138,7 +153,7 @@ public class PlayerController : MonoBehaviour
         if(rb.velocity.magnitude != 0 && !audioSource.isPlaying) audioSource.Play();
     }
 
-    void Shoot()
+    void ShootWithMouse()
     {
         if (endOfAiming)
         {
@@ -161,6 +176,25 @@ public class PlayerController : MonoBehaviour
             hp -= TAMA_COST;
             StateSetup();
         }
+    }
+
+    void ShootWithGamepad(int x, int y)
+    {
+        Vector3 shootingDirection = new Vector3(x, 0.0f, y);
+        shootingDirection.Normalize();
+
+        GameObject tama = Instantiate(slimyTama, transform.position, Quaternion.Euler(90, 0, Mathf.Atan2(shootingDirection.z, shootingDirection.x) * Mathf.Rad2Deg));
+
+        Tama tamaScript = tama.GetComponent<Tama>();
+        tamaScript.player = gameObject;
+        tamaScript.velocity = shootingDirection * TAMA_BASE_SPEED;
+
+        Destroy(tama, 3.0f);
+
+        audioSource.PlayOneShot(attacking);
+
+        hp -= TAMA_COST;
+        StateSetup();
     }
 
     void TakeDamage(HitEventData data)

@@ -58,6 +58,7 @@ public class BoardManager : MonoBehaviour
     public GameObject exit;
     public GameObject darkTile;
     public GameObject blurTile;
+    public GameObject boss;
 
     private Transform boardHolder;
     private GameObject ground;
@@ -291,13 +292,15 @@ public class BoardManager : MonoBehaviour
                         instance = Instantiate(toInstantiate, new Vector3(x, 0.0f, y), Quaternion.Euler(90, 0, 0)) as GameObject;
                         instance.transform.SetParent(boardHolder);
                     }
-
-                    //create dark layer
-                    instance = Instantiate(darkTile, new Vector3(x, 0.0f, y), Quaternion.Euler(90, 0, 0)) as GameObject;
-                    instance.transform.SetParent(boardHolder);
-                    //create blur layer
-                    instance = Instantiate(blurTile, new Vector3(x, 0.0f, y), Quaternion.Euler(90, 0, 0)) as GameObject;
-                    instance.transform.SetParent(boardHolder);
+                    if(GameObject.Find("GameManager(Clone)").GetComponent<GameManager>().level <= 3)
+                    {
+                        //create dark layer
+                        instance = Instantiate(darkTile, new Vector3(x, 0.0f, y), Quaternion.Euler(90, 0, 0)) as GameObject;
+                        instance.transform.SetParent(boardHolder);
+                        //create blur layer
+                        instance = Instantiate(blurTile, new Vector3(x, 0.0f, y), Quaternion.Euler(90, 0, 0)) as GameObject;
+                        instance.transform.SetParent(boardHolder);
+                    }
                 }
             }
         }
@@ -313,7 +316,7 @@ public class BoardManager : MonoBehaviour
     }
 
     //将指定类型和个数范围的Tile随机放置于可用空间中
-    void LayoutObjectAtRandom(GameObject[] tileArray, int minimum, int maximum)//
+    void LayoutObjectAtRandom(GameObject[] tileArray, int minimum, int maximum)
     {
         int objectCount = Random.Range(minimum, maximum + 1);
         for (int i = 0; i < objectCount; i++)
@@ -329,7 +332,7 @@ public class BoardManager : MonoBehaviour
 
     void LayoutPlayer()
     {
-
+        //player
         int index = 0;
         for(int i=0; i< gridPositions.Count; i++)
         {
@@ -364,8 +367,8 @@ public class BoardManager : MonoBehaviour
 
     public void SetupScene(int level)
     {
-        GenerateMap();
-        GenerateTileMap();
+        GenerateMap();  //fill a int[] with 0 and 1
+        GenerateTileMap();  //fill a Tile[] with FLOOR, OUTERWALL and OUTEROUTERWALL
         BoardSetup();
         CameraSetup();
         InitialiseList();
@@ -377,6 +380,30 @@ public class BoardManager : MonoBehaviour
         //int enemyCount = (int)Mathf.Log(level, 2f);
         int enemyCount = level;
         LayoutObjectAtRandom(enemyTiles, enemyCount, enemyCount+1);
+
+        navMeshSurface.BuildNavMesh();
+    }
+
+    public void SetupBossScene()
+    {
+        GenerateBossMap();  //fill a int[] with 0 and 1
+        GenerateTileMap();  //fill a Tile[] with FLOOR, OUTERWALL and OUTEROUTERWALL
+        BoardSetup();
+        CameraSetup();
+        InitialiseList();
+        LayoutPlayer();//放置玩家和出口的位置
+
+        GameObject boss0 = Instantiate(boss, new Vector3(11f, 0, 9f), Quaternion.Euler(90, 0, 0));
+
+        GameObject torch0 = Instantiate(torchTiles[0], new Vector3(8,0,11), Quaternion.Euler(90, 0, 0));
+        GameObject torch1 = Instantiate(torchTiles[0], new Vector3(6,0,10), Quaternion.Euler(90, 0, 0));
+        GameObject torch2 = Instantiate(torchTiles[0], new Vector3(4,0,9), Quaternion.Euler(90, 0, 0));
+        GameObject torch3 = Instantiate(torchTiles[0], new Vector3(2,0,8), Quaternion.Euler(90, 0, 0));
+        GameObject torch5 = Instantiate(torchTiles[0], new Vector3(14,0,11), Quaternion.Euler(90, 0, 0));
+        GameObject torch6 = Instantiate(torchTiles[0], new Vector3(16,0,10), Quaternion.Euler(90, 0, 0));
+        GameObject torch7 = Instantiate(torchTiles[0], new Vector3(18,0,9), Quaternion.Euler(90, 0, 0));
+        GameObject torch8 = Instantiate(torchTiles[0], new Vector3(20,0,8), Quaternion.Euler(90, 0, 0));
+
 
         navMeshSurface.BuildNavMesh();
     }
@@ -415,34 +442,45 @@ public class BoardManager : MonoBehaviour
             }
 
             //决定出入口
-            for (int x = 0; x < width; x++)
+            if(GameObject.Find("GameManager(Clone)").GetComponent<GameManager>().level > 3)
             {
-                for (int y = 0; y < height; y++)
+                tileMap[11,0].type = ENTER;
+                enterPositon = new Vector3(11f, 0.0f, 0f);
+
+                tileMap[11,12].type = EXIT;
+                exitPositon = new Vector3(11f, 0.0f, 12f);
+            }
+            else
+            {
+                for (int x = 0; x < width; x++)
                 {
-                    if (x > 1 && x < width - 2 && tileMap[x + 1, y].type == OUTERWALL && tileMap[x - 1, y].type == OUTERWALL && tileMap[x + 2, y].type == OUTERWALL && tileMap[x - 2, y].type == OUTERWALL&&((y<height-1&&tileMap[x, y + 1].type==FLOOR) ||(y>0&&tileMap[x, y - 1].type == FLOOR)))
-                        doorTiles.Add(tileMap[x, y]);
+                    for (int y = 0; y < height; y++)
+                    {
+                        if (x > 1 && x < width - 2 && tileMap[x + 1, y].type == OUTERWALL && tileMap[x - 1, y].type == OUTERWALL && tileMap[x + 2, y].type == OUTERWALL && tileMap[x - 2, y].type == OUTERWALL && ((y < height - 1 && tileMap[x, y + 1].type == FLOOR) || (y > 0 && tileMap[x, y - 1].type == FLOOR)))
+                            doorTiles.Add(tileMap[x, y]);
+                    }
                 }
-            }
 
-            int index = Random.Range(0, doorTiles.Count);
-            int enterX;
-            int exitX;
+                int index = Random.Range(0, doorTiles.Count);
+                int enterX;
+                int exitX;
 
-            tileMap[doorTiles[index].positionX, doorTiles[index].positionY].type = ENTER;
-            enterPositon = new Vector3(doorTiles[index].positionX, 0.0f, doorTiles[index].positionY);
-            enterX = doorTiles[index].positionX;
-            doorTiles.RemoveAt(index);
-
-            index = Random.Range(0, doorTiles.Count);
-            exitX = doorTiles[index].positionX;
-            while (Mathf.Abs(enterX- exitX)<1.1f)
-            {
+                tileMap[doorTiles[index].positionX, doorTiles[index].positionY].type = ENTER;
+                enterPositon = new Vector3(doorTiles[index].positionX, 0.0f, doorTiles[index].positionY);
+                enterX = doorTiles[index].positionX;
                 doorTiles.RemoveAt(index);
-                index = Random.Range(0, doorTiles.Count-1);
+
+                index = Random.Range(0, doorTiles.Count);
                 exitX = doorTiles[index].positionX;
+                while (Mathf.Abs(enterX - exitX) < 1.1f)
+                {
+                    doorTiles.RemoveAt(index);
+                    index = Random.Range(0, doorTiles.Count - 1);
+                    exitX = doorTiles[index].positionX;
+                }
+                tileMap[doorTiles[index].positionX, doorTiles[index].positionY].type = EXIT;
+                exitPositon = new Vector3(doorTiles[index].positionX, 0.0f, doorTiles[index].positionY);
             }
-            tileMap[doorTiles[index].positionX, doorTiles[index].positionY].type = EXIT;
-            exitPositon = new Vector3(doorTiles[index].positionX, 0.0f, doorTiles[index].positionY);
         }
     }
 
@@ -466,6 +504,36 @@ public class BoardManager : MonoBehaviour
     }
 
     //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    void GenerateBossMap()
+    {
+        map = new int[23, 13] 
+        {
+            {1,1,1,1,1,1,1,1,1,1,1,1,1},
+            {1,0,0,0,0,0,0,0,1,1,1,1,1},
+            {1,0,0,0,0,0,0,0,0,1,1,1,1},
+            {1,0,0,0,0,0,0,0,0,1,1,1,1},
+            {1,0,0,0,0,0,0,0,0,0,1,1,1},
+            {1,0,0,0,0,0,0,0,0,0,1,1,1},
+            {1,0,0,0,0,0,0,0,0,0,0,1,1},
+            {1,0,0,0,0,0,0,0,0,0,0,1,1},
+            {1,0,0,0,0,0,0,0,0,0,0,0,1},
+            {1,0,0,0,0,0,0,0,0,0,0,0,1},
+            {1,0,0,0,0,0,0,0,0,0,0,0,1},
+            {1,0,0,0,0,0,0,0,0,0,0,0,1},
+            {1,0,0,0,0,0,0,0,0,0,0,0,1},
+            {1,0,0,0,0,0,0,0,0,0,0,0,1},
+            {1,0,0,0,0,0,0,0,0,0,0,0,1},
+            {1,0,0,0,0,0,0,0,0,0,0,1,1},
+            {1,0,0,0,0,0,0,0,0,0,0,1,1},
+            {1,0,0,0,0,0,0,0,0,0,1,1,1},
+            {1,0,0,0,0,0,0,0,0,0,1,1,1},
+            {1,0,0,0,0,0,0,0,0,1,1,1,1},
+            {1,0,0,0,0,0,0,0,0,1,1,1,1},
+            {1,0,0,0,0,0,0,0,1,1,1,1,1},
+            {1,1,1,1,1,1,1,1,1,1,1,1,1},
+        };
+    }
+
     void GenerateMap()
     {
         map = new int[width, height];
