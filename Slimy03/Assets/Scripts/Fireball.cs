@@ -17,7 +17,7 @@ public class Fireball : MonoBehaviour
         direction.Normalize();
 
         RaycastHit hit;
-        if (Physics.Raycast(transform.position, direction, out hit, (newPosition - transform.position).magnitude * 7.0f))
+        if (Physics.Raycast(transform.position, direction, out hit, (newPosition - transform.position).magnitude * 2.0f))
         {
             GameObject other = hit.collider.gameObject;
             if (other != boss)

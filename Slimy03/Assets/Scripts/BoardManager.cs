@@ -32,6 +32,7 @@ public class BoardManager : MonoBehaviour
     public GameObject[] PotTiles;
     public GameObject[] RockTiles;
     public GameObject[] enemyTiles;
+    public GameObject[] demonTiles;
     public GameObject[] torchTiles;
     public GameObject outerWall;
     public GameObject outerWallW;
@@ -403,6 +404,8 @@ public class BoardManager : MonoBehaviour
         GameObject torch6 = Instantiate(torchTiles[0], new Vector3(16,0,10), Quaternion.Euler(90, 0, 0));
         GameObject torch7 = Instantiate(torchTiles[0], new Vector3(18,0,9), Quaternion.Euler(90, 0, 0));
         GameObject torch8 = Instantiate(torchTiles[0], new Vector3(20,0,8), Quaternion.Euler(90, 0, 0));
+
+        LayoutObjectAtRandom(demonTiles, 4, 6);
 
 
         navMeshSurface.BuildNavMesh();

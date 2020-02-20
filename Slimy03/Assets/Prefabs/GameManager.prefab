@@ -72,6 +72,8 @@ MonoBehaviour:
   - {fileID: 6488759836021390581, guid: 5a5cf2a8b196b494ea56b134e456f14d, type: 3}
   enemyTiles:
   - {fileID: 7798766741207204821, guid: a4d87d4fb16a11c4f91738a3552b59f3, type: 3}
+  demonTiles:
+  - {fileID: 7489798276851730335, guid: 60a1a482359df034fbfe29ca2cfbf731, type: 3}
   torchTiles:
   - {fileID: 298924405959160450, guid: 34560e865f5374e4f9853a7614aa49b7, type: 3}
   outerWall: {fileID: 9117066716094040641, guid: b17ecbcda7b98ba4097b448234ab4207,
