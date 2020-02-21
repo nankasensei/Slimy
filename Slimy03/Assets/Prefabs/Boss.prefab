@@ -564,6 +564,8 @@ MonoBehaviour:
   leftArmShootPos: {fileID: 4171182546299801393}
   rightArm: {fileID: 8266598444265053012}
   rightArmShootPos: {fileID: 5290246398395812354}
+  LittleDemon: {fileID: 7489798276851730335, guid: 60a1a482359df034fbfe29ca2cfbf731,
+    type: 3}
   fireballPrefab: {fileID: 1299399454371565397, guid: 9469622cc6b1f5740b05b0102073b1ec,
     type: 3}
   FIREBALL_BASE_SPEED: 10

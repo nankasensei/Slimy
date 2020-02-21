@@ -137,6 +137,7 @@ MonoBehaviour:
   spriteRenderer: {fileID: 0}
   HP_MAX: 0
   audioSource: {fileID: 1675207111528853173}
+  isAlive: 0
   attackPos: {fileID: 2819294795424040229}
   attackAnchor: {fileID: 6970249885880675009}
   playerLayer:
@@ -150,7 +151,7 @@ CapsuleCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7798766741207204821}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   m_Radius: 0.5
   m_Height: 1

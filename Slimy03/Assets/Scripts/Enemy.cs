@@ -13,7 +13,7 @@ public class Enemy : MonoBehaviour
     public AudioSource audioSource;
 
     protected float hp;
-    protected bool isAlive;
+    public bool isAlive;
     protected bool isInvokeSet;
     protected Vector2 direction;
 

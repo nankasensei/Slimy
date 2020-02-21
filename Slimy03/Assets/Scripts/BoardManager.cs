@@ -405,7 +405,7 @@ public class BoardManager : MonoBehaviour
         GameObject torch7 = Instantiate(torchTiles[0], new Vector3(18,0,9), Quaternion.Euler(90, 0, 0));
         GameObject torch8 = Instantiate(torchTiles[0], new Vector3(20,0,8), Quaternion.Euler(90, 0, 0));
 
-        LayoutObjectAtRandom(demonTiles, 4, 6);
+        //LayoutObjectAtRandom(demonTiles, 4, 6);
 
 
         navMeshSurface.BuildNavMesh();

@@ -11,6 +11,12 @@ public class Boss : MonoBehaviour
     public Transform rightArm;
     public Transform rightArmShootPos;
 
+    private Timer mainTimer;
+    private Timer summonTimer;
+    private Timer fireworkLoopTimer;
+
+    public GameObject LittleDemon;
+
     public GameObject fireballPrefab;
     public float FIREBALL_BASE_SPEED = 1.0f;
     public Timer fireworkTimer;
@@ -26,23 +32,59 @@ public class Boss : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        mainTimer = new Timer();
+        mainTimer.Start();
+        summonTimer = new Timer();
         fireworkTimer = new Timer();
         beamTimer = new Timer();
+        fireworkLoopTimer = new Timer();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonUp(0))
+        if(mainTimer.elapasedTime > 2)
         {
-            fireworkTimer.Start();
-            beamTimer.Start();
+            if (Input.GetMouseButtonUp(0))
+            {
+                //BeamStart();
+            }
+
+            //deal with Summon
+            {
+                if (GameManager.instance.enemies.Count == 0)
+                {
+                    if (!summonTimer.isStart)
+                        summonTimer.Start();
+                }
+
+                if (summonTimer.isStart && summonTimer.elapasedTime > 5)
+                {
+                    Summon();
+                    summonTimer.Stop();
+                }
+            }
+
+            //deal with Firework
+            {
+                if (!fireworkLoopTimer.isStart)
+                {
+                    fireworkLoopTimer.Start();
+                }
+                else
+                {
+                    if (fireworkLoopTimer.elapasedTime > 6)
+                    {
+                        FireWorkStart();
+                        fireworkLoopTimer.Stop();
+                    }
+                }
+            }
+
+            BodyDir();
+            FireworkProgress();
+            BeamProgress();
         }
-
-        BodyDir();
-
-        Firework();
-        Beam();
     }
 
     void BodyDir()
@@ -53,7 +95,27 @@ public class Boss : MonoBehaviour
             body.localScale = new Vector3(-1, 1, 1);
     }
 
-    void Beam()
+    void Summon()
+    {
+        for(int i = 0; i < 5; i++)
+        {
+            GameObject newObject = Instantiate(LittleDemon, new Vector3(5 + 3*i, 0, 4), Quaternion.Euler(90, 0, 0));
+            GameManager.instance.enemies.Add(newObject);
+        }
+    }
+
+    void BeamStart()
+    {
+        beamTimer.Start();
+        lastBeamtime = 0;
+        beamStep = 0;
+        if(GameObject.Find("BeamCharge(Clone)") != null)
+        {
+            Destroy(GameObject.Find("BeamCharge(Clone)"));
+        }
+    }
+
+    void BeamProgress()
     {
         if(beamTimer.isStart)
         {
@@ -90,7 +152,13 @@ public class Boss : MonoBehaviour
         }
     }
 
-    void Firework()
+    void FireWorkStart()
+    {
+        fireworkTimer.Start();
+        lastFireTime = 0;
+    }
+
+    void FireworkProgress()
     {
         if (fireworkTimer.isStart)
         {

@@ -239,7 +239,7 @@ public class PlayerController : MonoBehaviour
             StateSetup();
         }
 
-        if (other.tag == "Enemy")
+        if (other.tag == "Enemy" && !other.GetComponent<Enemy>().isAlive)
         {
             audioSource.PlayOneShot(swallowing);
 
