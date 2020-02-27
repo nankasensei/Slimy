@@ -51,8 +51,8 @@ MonoBehaviour:
   potMin: 2
   rockMax: 11
   rockMin: 8
-  torchMax: 2
-  torchMin: 0
+  torchMax: 4
+  torchMin: 4
   navMeshSurface: {fileID: 942613183730629844}
   floorTiles:
   - {fileID: 5349983368027923285, guid: f8671cbfe8a671b48abc6175d19a4886, type: 3}
@@ -151,9 +151,10 @@ MonoBehaviour:
   enemies: []
   audioSource: {fileID: 5302777772399777912}
   audioSourceBGM: {fileID: 3796312096250953184}
+  bossBGM: {fileID: 8300000, guid: eeb99b59fa681e64a8718862f071d9ab, type: 3}
   playerPrefab: {fileID: 3235989013604411370, guid: 2ac87ce293dc0cb46adf0dd250c1ca6a,
     type: 3}
-  level: 4
+  level: 3
 --- !u!114 &942613183730629844
 MonoBehaviour:
   m_ObjectHideFlags: 0

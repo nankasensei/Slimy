@@ -7,7 +7,7 @@ public class Fireball : MonoBehaviour
     public Vector3 velocity;
     public GameObject boss;
 
-    public float damage = 4.0f;
+    public float damage;
 
     // Update is called once per frame
     void Update()
@@ -24,7 +24,7 @@ public class Fireball : MonoBehaviour
             {
                 if (other.CompareTag("Player"))
                 {
-                    //SlimyEvents.hitEvent.Invoke(new HitEventData(player, other, gameObject));
+                    SlimyEvents.hitEvent.Invoke(new HitEventData(boss, other, damage));
                     Destroy(gameObject);
                 }
                 if (other.CompareTag("Pot") || other.CompareTag("Rock"))

@@ -6,7 +6,7 @@ public class EnemyRat : Enemy
 {
 
     //private Vector3 movementDirection;
-    private const float ATK = 2;
+    private const float ATK = 5;
     private float attackRadius;
     private Timer attackTimer;
     public Transform attackPos;
@@ -31,10 +31,9 @@ public class EnemyRat : Enemy
         transform.rotation = Quaternion.Euler(90, 0, 0);
         isAlive = true;
         isInvokeSet = false;
-        HP_MAX = 9;
         hp = HP_MAX;
         attackRadius = 0.4f;
-        buffHp = 5;
+        buffHp = 10;
         attackTimer = new Timer();
         mainTimer = new Timer();
         mainTimer.Start();
@@ -43,7 +42,7 @@ public class EnemyRat : Enemy
     // Update is called once per frame
     void Update()
     {
-        if(mainTimer.elapasedTime > 2)
+        if(mainTimer.elapasedTime > 2 && GameObject.Find("Player").GetComponent<PlayerController>().isAlive)
         {
             if ((GameObject.Find("Player").transform.position - transform.position).magnitude < 6.0f)
             {
@@ -119,6 +118,7 @@ public class EnemyRat : Enemy
         agent.speed = 0.0f;
         spriteRenderer.color = new Color(90f / 255f, 90f / 255f, 90f / 255f);
         hp = 0;
+        hpBar.SetActive(false);
         GameManager.instance.enemies.Remove(gameObject);
         GameManager.instance.EnemiesCleared();//detect if all enemies cleared
         GetComponent<Collider>().isTrigger = true; 

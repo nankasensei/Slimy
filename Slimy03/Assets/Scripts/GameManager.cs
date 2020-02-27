@@ -10,7 +10,9 @@ public class GameManager : MonoBehaviour
     public List<GameObject> enemies;//added in BoardManager
     public AudioSource audioSource;
     public AudioSource audioSourceBGM;
+    public AudioClip bossBGM;
     public GameObject playerPrefab;
+    public Timer sceneStartTimer;
 
     public int level =1;
 
@@ -25,9 +27,10 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
         boardScript = GetComponent<BoardManager>();
 
-        playerHp =20;
+        playerHp = PlayerController.PLAYER_HP_MAX;
 
         SlimyEvents.dieEvent.AddListener(GameOver);
+        sceneStartTimer = new Timer();
 
         InitGame();
     }
@@ -36,6 +39,22 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         if(GameObject.Find("Player").GetComponent<PlayerController>().hp <= 0) audioSourceBGM.Stop();
+
+        if (level == 3 && enemies.Count == 0)
+            audioSourceBGM.Stop();
+
+        if (sceneStartTimer.isStart)
+        {
+            if(sceneStartTimer.elapasedTime > 2)
+            {
+                if(level >= 4)
+                {
+                    audioSourceBGM.clip = bossBGM;
+                    audioSourceBGM.Play();
+                }
+                sceneStartTimer.Stop();
+            }
+        }
     }
 
     private void OnLevelWasLoaded(int index)
@@ -49,16 +68,20 @@ public class GameManager : MonoBehaviour
     void InitGame()
     {
         //GameObject.Find("UI").SetActive(false);
+        sceneStartTimer.Start();
         GameObject player = Instantiate(playerPrefab);
         player.name = "Player";
         enemies.Clear();
         if(level > 3)
         {
             boardScript.SetupBossScene();
+            audioSource.Stop();
         }
         else
+        {
             boardScript.SetupScene(level);
-        audioSource.Play();
+            audioSource.Play();
+        }
     }
 
     void GameOver()

@@ -10,6 +10,9 @@ TagManager:
   - Enemy
   - Pot
   - Rock
+  - Arm
+  - BossBody
+  - Torch
   layers:
   - Default
   - TransparentFX

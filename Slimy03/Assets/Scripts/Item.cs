@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class Item : MonoBehaviour
 {
-    const int POT_HP = 6;
-
     public float HP_MAX;
     public float hp;
 
@@ -22,10 +20,6 @@ public class Item : MonoBehaviour
             spriteRenderer.color = new Color(90f / 255f, 90f / 255f, 90f / 255f);
             hp = 0;
             GetComponent<Collider>().isTrigger = true;
-        }
-        if (hp <= HP_MAX * -1 && isAlive == false)
-        {
-            Gone();
         }
     }
 

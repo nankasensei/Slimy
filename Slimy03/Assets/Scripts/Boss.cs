@@ -10,10 +10,15 @@ public class Boss : MonoBehaviour
     public Transform leftArmShootPos;
     public Transform rightArm;
     public Transform rightArmShootPos;
+    public AudioSource audioSource;
+    public AudioClip shootClip;
+    public AudioClip beamClip;
+    public AudioClip growlClip;
 
     private Timer mainTimer;
     private Timer summonTimer;
     private Timer fireworkLoopTimer;
+    private Timer beamLoopTimer;
 
     public GameObject LittleDemon;
 
@@ -38,52 +43,97 @@ public class Boss : MonoBehaviour
         fireworkTimer = new Timer();
         beamTimer = new Timer();
         fireworkLoopTimer = new Timer();
+        beamLoopTimer = new Timer();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(mainTimer.elapasedTime > 2)
+        if(body.GetComponent<BossBody>().isAlive)
         {
-            if (Input.GetMouseButtonUp(0))
+            if (mainTimer.elapasedTime > 2 && GameObject.Find("Player").GetComponent<PlayerController>().isAlive)
             {
-                //BeamStart();
-            }
-
-            //deal with Summon
-            {
-                if (GameManager.instance.enemies.Count == 0)
+                if (Input.GetMouseButtonUp(0))
                 {
-                    if (!summonTimer.isStart)
-                        summonTimer.Start();
+                    //BeamStart();
                 }
 
-                if (summonTimer.isStart && summonTimer.elapasedTime > 5)
+                //deal with Summon
                 {
-                    Summon();
-                    summonTimer.Stop();
-                }
-            }
+                    if (GameManager.instance.enemies.Count == 0)
+                    {
+                        if (!summonTimer.isStart)
+                            summonTimer.Start();
+                    }
 
-            //deal with Firework
-            {
-                if (!fireworkLoopTimer.isStart)
+                    if (summonTimer.isStart && summonTimer.elapasedTime > 10)
+                    {
+                        Summon();
+                        summonTimer.Stop();
+                    }
+                }
+
+                if (!(leftArm == null && rightArm == null))
                 {
-                    fireworkLoopTimer.Start();
+                    //deal with Firework
+                    if (!fireworkLoopTimer.isStart)
+                    {
+                        fireworkLoopTimer.Start();
+                    }
+                    else
+                    {
+                        if (fireworkLoopTimer.elapasedTime > 8)
+                        {
+                            FireWorkStart();
+                            fireworkLoopTimer.Stop();
+                        }
+                    }
                 }
                 else
                 {
-                    if (fireworkLoopTimer.elapasedTime > 6)
+                    //deal with Beam
+                    if (!beamLoopTimer.isStart)
                     {
-                        FireWorkStart();
-                        fireworkLoopTimer.Stop();
+                        beamLoopTimer.Start();
+                    }
+                    else
+                    {
+                        if (beamLoopTimer.elapasedTime > 8)
+                        {
+                            BeamStart();
+                            beamLoopTimer.Stop();
+                        }
                     }
                 }
-            }
 
-            BodyDir();
-            FireworkProgress();
-            BeamProgress();
+                BodyDir();
+                FireworkProgress();
+                BeamProgress();
+            }
+            else
+            {
+                audioSource.Stop();
+                if (GameObject.Find("BeamCharge(Clone)") != null)
+                {
+                    Destroy(GameObject.Find("BeamCharge(Clone)"));
+                }
+            }
+        }
+        else
+        {
+            if (leftArm != null)
+                leftArm.GetComponent<BossArm>().Die();
+            if (rightArm != null)
+                rightArm.GetComponent<BossArm>().Die();
+            for(int i = 0;i < GameManager.instance.enemies.Count;i++)
+            {
+                GameManager.instance.enemies[i].GetComponent<LittleDemon>().Die();
+            }
+            if (GameObject.Find("BeamCharge(Clone)") != null)
+            {
+                Destroy(GameObject.Find("BeamCharge(Clone)"));
+            }
+            audioSource.Stop();
         }
     }
 
@@ -113,6 +163,9 @@ public class Boss : MonoBehaviour
         {
             Destroy(GameObject.Find("BeamCharge(Clone)"));
         }
+        audioSource.clip = beamClip;
+        audioSource.volume = 0.07f;
+        audioSource.PlayDelayed(1);
     }
 
     void BeamProgress()
@@ -126,14 +179,14 @@ public class Boss : MonoBehaviour
                     beamStep++;
                     break;
                 case 1:
-                    if(beamTimer.elapasedTime > 1)
+                    if(beamTimer.elapasedTime > 1.5f)
                     {
                         Destroy(GameObject.Find("BeamCharge(Clone)"));
                         beamStep++;
                     }
                     break;
                 case 2:
-                    if(beamTimer.elapasedTime < 3)
+                    if(beamTimer.elapasedTime < 4f)
                     {
                         if (beamTimer.elapasedTime - lastBeamtime > 0.0001f)
                         {
@@ -144,6 +197,7 @@ public class Boss : MonoBehaviour
                     else
                     {
                         beamTimer.Stop();
+                        audioSource.Stop();
                         lastBeamtime = 0;
                         beamStep = 0;
                     }
@@ -162,13 +216,17 @@ public class Boss : MonoBehaviour
     {
         if (fireworkTimer.isStart)
         {
-            rightArm.transform.localEulerAngles = new Vector3(0, 0, 70f * Mathf.Sin(2 * Mathf.PI * fireworkTimer.elapasedTime / 3f));
-            leftArm.transform.localEulerAngles = new Vector3(0, 0, -70f * Mathf.Sin(2 * Mathf.PI * fireworkTimer.elapasedTime / 3f));
+            if (rightArm != null)
+                rightArm.transform.localEulerAngles = new Vector3(0, 0, 70f * Mathf.Sin(2 * Mathf.PI * fireworkTimer.elapasedTime / 3f));
+            if (leftArm != null)
+                leftArm.transform.localEulerAngles = new Vector3(0, 0, -70f * Mathf.Sin(2 * Mathf.PI * fireworkTimer.elapasedTime / 3f));
 
             if (fireworkTimer.elapasedTime - lastFireTime > 0.25f)
             {
-                FireballShoot(0);
-                FireballShoot(1);
+                if(leftArm != null)
+                    FireballShoot(0);
+                if (rightArm != null)
+                    FireballShoot(1);
                 lastFireTime = fireworkTimer.elapasedTime;
             }
 
@@ -226,8 +284,8 @@ public class Boss : MonoBehaviour
         fireballScript.boss = gameObject;
         fireballScript.velocity = shootingDirection * FIREBALL_BASE_SPEED;
 
-        Destroy(fireball, 3.0f);
+        audioSource.PlayOneShot(shootClip, 0.03f);
 
-        //audioSource.PlayOneShot(attacking);
+        Destroy(fireball, 3.0f);
     }
 }

@@ -11,6 +11,9 @@ public class Enemy : MonoBehaviour
     public SpriteRenderer spriteRenderer;
     public float HP_MAX;
     public AudioSource audioSource;
+    public AudioClip hittingClip;
+    public RectTransform hitpoints;
+    public GameObject hpBar;
 
     protected float hp;
     public bool isAlive;
@@ -19,7 +22,7 @@ public class Enemy : MonoBehaviour
 
     public void TakeDamage(HitEventData data)
     {
-        if(data.victim == gameObject)
+        if(data.victim == gameObject && isAlive)
         {
             //hit recover for 0.5s
             agent.isStopped = true;
@@ -34,18 +37,12 @@ public class Enemy : MonoBehaviour
             animator.SetTrigger("Hit");
 
             hp -= data.tama.GetComponent<Tama>().damage;
-            if(isAlive == true)
-            {
-                audioSource.Play();
-                if(hp < 0)
-                {
-                    Die();                   
-                }
-            }
+            hitpoints.localScale = new Vector3(hp / HP_MAX, 1, 1);
 
-            if (hp <= HP_MAX * -1 && isAlive == false)
+            audioSource.PlayOneShot(hittingClip, 0.4f);
+            if (hp <= 0)
             {
-                Gone();
+                Die();
             }
         }
     }
@@ -57,6 +54,7 @@ public class Enemy : MonoBehaviour
         agent.speed = 0.0f;
         spriteRenderer.color = new Color(90f / 255f, 90f / 255f, 90f / 255f);
         hp = 0;
+        hpBar.SetActive(false);
         GameManager.instance.enemies.Remove(gameObject);
         GameManager.instance.EnemiesCleared();//detect if all enemies cleared
         GetComponent<Collider>().isTrigger = true;         

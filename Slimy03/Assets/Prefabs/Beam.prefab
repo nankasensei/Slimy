@@ -146,7 +146,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   velocity: {x: 0, y: 0, z: 0}
   boss: {fileID: 0}
-  damage: 4
+  damage: 0.3
 --- !u!1 &5019161412308062423
 GameObject:
   m_ObjectHideFlags: 0

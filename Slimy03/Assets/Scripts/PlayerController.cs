@@ -6,18 +6,19 @@ using UnityEngine.SceneManagement;
 public class PlayerController : MonoBehaviour
 {
     [Header("Player statistics")]
-    public float PLAYER_HP_MAX;
+    public static float PLAYER_HP_MAX = 100;
     public Vector3 movementDirection;
     public float movementSpeed;
     public float hp;
     public float defence;
-
+    public bool isAlive;
 
     [Header("Player attributes")]
     public float MOVEMENT_BASE_SPEED = 1.0f;
     public float TAMA_BASE_SPEED = 1.0f;
     public int TAMA_COST = 1;
     public float DEF = 1;
+    public float TAMA_RATE = 0.33f;
 
 
     [Header("References")]
@@ -33,12 +34,16 @@ public class PlayerController : MonoBehaviour
 
     [Header("Prefabs")]
     public GameObject slimyTama;
+    public GameObject slimyTamaEX;
     public ParticleSystem effect;
 
     private float enterExitY;
     private float exitExitY;
     private bool endOfAiming;
     private float movementSpeedOffset;
+    private int eatArmCount;
+    private GameObject tamaPrefab;
+    private float lastShotTime;
 
     void Awake()
     {
@@ -49,14 +54,20 @@ public class PlayerController : MonoBehaviour
     {
         hp = GameManager.instance.playerHp;
         defence = DEF;
+        isAlive = true;
         movementSpeedOffset = 1f;
+        tamaPrefab = slimyTama;
         StateSetup();
     }
 
     // Update is called once per frame
     void Update()
     {
-        ProcessInputs();
+        Debug.Log(hp);
+        if(!GameManager.instance.sceneStartTimer.isStart && isAlive)
+        {
+            ProcessInputs();
+        }
         Move();
         ShootWithMouse();
     }
@@ -126,23 +137,38 @@ public class PlayerController : MonoBehaviour
     //upgrade the state
     void StateSetup()
     {
-        if(hp <= 0) Die();
-        else if(hp > 2 * PLAYER_HP_MAX) hp = 2 * PLAYER_HP_MAX;
+        if(hp <= 0)
+            Die();
+        else if(hp > 2 * PLAYER_HP_MAX)
+            hp = 2 * PLAYER_HP_MAX;
+
         float scale = 1.0f*hp / PLAYER_HP_MAX;
+
         if (scale < 0.5f)
             scale = 0.5f;
         else if (scale > 2.0f)
             scale = 2.0f;
+
         transform.localScale = new Vector3(scale, scale ,1.0f);
 
-        movementSpeedOffset = 1.0f * PLAYER_HP_MAX / hp;
+        if(hp > PLAYER_HP_MAX)
+        {
+            movementSpeedOffset = 1.0f * (PLAYER_HP_MAX / hp) * (PLAYER_HP_MAX / hp);
+        }
+        else
+        {
+            movementSpeedOffset = 1.0f * (PLAYER_HP_MAX / hp);
+        }
+
         if (movementSpeedOffset < 0.75f)
             movementSpeedOffset = 0.75f;
         else if (movementSpeedOffset > 1.25f)
             movementSpeedOffset = 1.25f;
 
-        if(defence > 2.0f) defence = 2.0f;
-        else if(defence < 0.5f) defence = 0.5f;
+        if(defence > 2.0f)
+            defence = 2.0f;
+        else if(defence < 0.5f)
+            defence = 0.5f;
     }
 
     void Move()
@@ -155,23 +181,21 @@ public class PlayerController : MonoBehaviour
 
     void ShootWithMouse()
     {
-        if (endOfAiming)
+        if (endOfAiming && Time.time - lastShotTime > TAMA_RATE)
         {
             Vector3 mousePosition3d = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Vector3 shootingDirection = new Vector3(mousePosition3d.x - transform.position.x, 0.0f,mousePosition3d.z - transform.position.z);
             shootingDirection.Normalize();
 
-            GameObject tama = Instantiate(slimyTama, transform.position, Quaternion.Euler(90, 0, Mathf.Atan2(shootingDirection.z, shootingDirection.x) * Mathf.Rad2Deg));
+            GameObject tama = Instantiate(tamaPrefab, transform.position, Quaternion.Euler(90, 0, Mathf.Atan2(shootingDirection.z, shootingDirection.x) * Mathf.Rad2Deg));
             //tama.GetComponent<Rigidbody>().velocity = shootingDirection * TAMA_BASE_SPEED;
             Tama tamaScript = tama.GetComponent<Tama>();
             tamaScript.player = gameObject;
             tamaScript.velocity = shootingDirection * TAMA_BASE_SPEED;
-
-            //Debug.Log(Mathf.Atan2(shootingDirection.z, shootingDirection.x) * Mathf.Rad2Deg);
-
+            lastShotTime = Time.time;
             Destroy(tama, 3.0f);
 
-            audioSource.PlayOneShot(attacking);
+            audioSource.PlayOneShot(attacking, 0.2f);
 
             hp -= TAMA_COST;
             StateSetup();
@@ -191,7 +215,7 @@ public class PlayerController : MonoBehaviour
 
         Destroy(tama, 3.0f);
 
-        audioSource.PlayOneShot(attacking);
+        audioSource.PlayOneShot(attacking, 0.2f);
 
         hp -= TAMA_COST;
         StateSetup();
@@ -207,7 +231,7 @@ public class PlayerController : MonoBehaviour
             animator.SetFloat("Vertical", damageDirection.y);
             animator.SetTrigger("Hit");
 
-            audioSource.PlayOneShot(hitting);
+            audioSource.PlayOneShot(hitting, 0.2f);
 
             hp -= data.meleeDamage  / defence;
             
@@ -217,10 +241,12 @@ public class PlayerController : MonoBehaviour
 
     void Die()
     {
-        audioSource.PlayOneShot(dying);
+        isAlive = false;
+        audioSource.PlayOneShot(dying, 0.15f);
         animator.enabled = false;
         spriteRenderer.color = new Color(90f / 255f, 90f / 255f, 90f / 255f);
-        this.enabled = false;
+        movementDirection = Vector3.zero;
+        //this.enabled = false;
         SlimyEvents.dieEvent.Invoke();
     }
 
@@ -234,17 +260,38 @@ public class PlayerController : MonoBehaviour
 
         if (other.tag == "Rock" || other.tag == "Pot")
         {
-            other.gameObject.GetComponent<Item>().Buff();
+            audioSource.PlayOneShot(swallowing, 0.3f);
+            //other.gameObject.GetComponent<Item>().Buff();
+            SetDef(1.0f, 8.0f);
             other.gameObject.GetComponent<Item>().Gone();
             StateSetup();
         }
 
         if (other.tag == "Enemy" && !other.GetComponent<Enemy>().isAlive)
         {
-            audioSource.PlayOneShot(swallowing);
+            audioSource.PlayOneShot(swallowing, 0.3f);
 
             other.gameObject.GetComponent<Enemy>().Buff();
             other.gameObject.GetComponent<Enemy>().Gone();
+        }
+
+        if (other.tag == "Arm" && !other.GetComponent<BossArm>().isAlive)
+        {
+            audioSource.PlayOneShot(swallowing, 0.3f);
+
+            eatArmCount++;
+            if (eatArmCount == 2)
+                tamaPrefab = slimyTamaEX;
+            other.gameObject.GetComponent<BossArm>().Gone();
+        }
+
+        if (other.tag == "BossBody" && !other.GetComponent<BossBody>().isAlive)
+        {
+            audioSource.PlayOneShot(swallowing, 0.3f);
+
+            other.gameObject.GetComponent<BossBody>().Buff();
+            //other.gameObject.GetComponent<BossBody>().Gone();
+            Destroy(GameObject.Find("Boss(Clone)"));
         }
     }
 

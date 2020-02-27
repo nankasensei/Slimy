@@ -26,7 +26,7 @@ Transform:
   m_GameObject: {fileID: 962316673083233773}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
+  m_LocalScale: {x: 0.3, y: 0.3, z: 1}
   m_Children: []
   m_Father: {fileID: 3295270117649555795}
   m_RootOrder: 1
@@ -4882,15 +4882,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ee0df3913eaefd4dbba90c3693075e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PLAYER_HP_MAX: 20
   movementDirection: {x: 0, y: 0, z: 0}
   movementSpeed: 0
   hp: 0
   defence: 0
+  isAlive: 0
   MOVEMENT_BASE_SPEED: 5
   TAMA_BASE_SPEED: 9
   TAMA_COST: 1
   DEF: 1
+  TAMA_RATE: 0.33
   rb: {fileID: 3235989013604411287}
   animator: {fileID: 3235989013604411285}
   spriteRenderer: {fileID: 3235989013604411284}
@@ -4901,6 +4902,8 @@ MonoBehaviour:
   hitting: {fileID: 8300000, guid: 55a33b80be8bee445aaee99310e2fd1d, type: 3}
   dying: {fileID: 8300000, guid: 64a1c7be7e0142845a3609f5d5f59862, type: 3}
   slimyTama: {fileID: 5372143973830659459, guid: 56682f44f67e9e549b2c91463549c1d0,
+    type: 3}
+  slimyTamaEX: {fileID: 4367297537809435418, guid: a52854cb5c4486a458e7f2b6fd1f0700,
     type: 3}
   effect: {fileID: 3235989013156163494}
 --- !u!54 &3235989013604411287
@@ -5155,7 +5158,7 @@ Transform:
   m_GameObject: {fileID: 6372115949408586333}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.7, y: 0.7, z: 1}
   m_Children: []
   m_Father: {fileID: 3295270117649555795}
   m_RootOrder: 0

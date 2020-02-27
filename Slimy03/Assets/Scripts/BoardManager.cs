@@ -331,6 +331,46 @@ public class BoardManager : MonoBehaviour
         }
     }
 
+    //将指定类型和个数范围的Tile随机放置于分散间隔为distance的可用空间中
+    void LayoutObjectAtRandomWithSpace(GameObject[] tileArray, int minimum, int maximum, int distance)
+    {
+        int objectCount = Random.Range(minimum, maximum + 1);
+        List<Vector3> lastPositions = new List<Vector3>();
+
+        for (int i = 0; i < objectCount; i++)
+        {
+            int randomIndex = Random.Range(0, gridPositions.Count);
+            Vector3 randomPosition = gridPositions[randomIndex];
+            bool flag = true;
+
+            if(i > 0)
+            {
+                while(flag)
+                {
+                    flag = false;
+                    randomIndex = Random.Range(0, gridPositions.Count);
+                    randomPosition = gridPositions[randomIndex];
+
+                    for(int j=0; j < lastPositions.Count; j++)
+                    {
+                        if ((randomPosition - lastPositions[j]).magnitude < distance)
+                            flag = true;
+                    }
+                }
+            }
+
+            gridPositions.RemoveAt(randomIndex);
+            lastPositions.Add(randomPosition);
+
+            randomPosition.y = 0.5f;
+
+            GameObject tileChoice = tileArray[Random.Range(0, tileArray.Length)];
+            GameObject newObject = Instantiate(tileChoice, randomPosition, Quaternion.Euler(90, 0, 0));
+            if (newObject.tag == "Enemy")
+                GameManager.instance.enemies.Add(newObject);
+        }
+    }
+
     void LayoutPlayer()
     {
         //player
@@ -376,8 +416,8 @@ public class BoardManager : MonoBehaviour
         LayoutPlayer();//放置玩家和出口的位置
         LayoutObjectAtRandom(PotTiles, potMin, potMax);
         LayoutObjectAtRandom(RockTiles, rockMin, rockMax);
-        LayoutObjectAtRandom(torchTiles, torchMin, torchMax);
-        //LayoutObjectAtRandom(Tiles, foodCount.minimum, foodCount.maximum);
+        LayoutObjectAtRandomWithSpace(torchTiles, torchMin, torchMax, 5);
+        //LayoutObjectAtRandom(torchTiles, torchMin, torchMax);
         //int enemyCount = (int)Mathf.Log(level, 2f);
         int enemyCount = level;
         LayoutObjectAtRandom(enemyTiles, enemyCount, enemyCount+1);

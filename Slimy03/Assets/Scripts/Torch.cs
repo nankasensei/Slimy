@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class Torch : MonoBehaviour
 {
-    public Transform spriteMask;
+    public GameObject spriteMask;
+    public Animator animator;
 
     [Range(0.05f, 0.2f)]
     public float flickTime;
@@ -19,6 +20,9 @@ public class Torch : MonoBehaviour
     {
         time = 0f;
         isBecomingLarger = false;
+
+        if (GameManager.instance.level > 3)
+            Light();
     }
 
     // Update is called once per frame
@@ -27,16 +31,25 @@ public class Torch : MonoBehaviour
         time += Time.deltaTime;
         if(time > flickTime)
         {
-            if(isBecomingLarger)
+            Vector3 spriteMaskScale = spriteMask.transform.localScale;
+
+            if (isBecomingLarger)
             {
-                spriteMask.localScale = new Vector3(spriteMask.localScale.x + addSize, spriteMask.localScale.y, spriteMask.localScale.z + addSize);
+                spriteMaskScale = new Vector3(spriteMaskScale.x + addSize, spriteMaskScale.y, spriteMaskScale.z + addSize);
+                
             }
             else
             {
-                spriteMask.localScale = new Vector3(spriteMask.localScale.x - addSize, spriteMask.localScale.y, spriteMask.localScale.z - addSize);
+                spriteMaskScale = new Vector3(spriteMaskScale.x - addSize, spriteMaskScale.y, spriteMaskScale.z - addSize);
             }
             time = 0f;
             isBecomingLarger = !isBecomingLarger;
         }
+    }
+
+    public void Light()
+    {
+        spriteMask.SetActive(true);
+        animator.SetBool("isLight", true);
     }
 }

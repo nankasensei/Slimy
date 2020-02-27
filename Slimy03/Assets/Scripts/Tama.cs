@@ -22,23 +22,38 @@ public class Tama : MonoBehaviour
             GameObject other = hit.collider.gameObject;
             if (other != player)
             {
-                if (other.CompareTag("Enemy"))
+                if (other.CompareTag("Enemy") && other.GetComponent<Enemy>().isAlive)
                 {
                     SlimyEvents.hitEvent.Invoke(new HitEventData(player, other, gameObject));
                     Destroy(gameObject);
                     //Debug.Log(hit.transform.name + " " + transform.position);
+                }
+                if (other.CompareTag("Arm") && other.GetComponent<BossArm>().isAlive)
+                {
+                    SlimyEvents.hitEvent.Invoke(new HitEventData(player, other, gameObject));
+                    Destroy(gameObject);
+                    //Debug.Log(hit.transform.name + " " + transform.position);
+                }
+                if (other.CompareTag("BossBody") && other.GetComponent<BossBody>().isAlive)
+                {
+                    SlimyEvents.hitEvent.Invoke(new HitEventData(player, other, gameObject));
+                    Destroy(gameObject);
+                    Debug.Log(hit.transform.name + " " + transform.position);
                 }
                 if (other.CompareTag("Pot") || other.CompareTag("Rock"))
                 {
                     Item item = other.GetComponent<Item>();
                     item.TakeDamage(damage);
                     Destroy(gameObject);
-                    //Debug.Log(hit.transform.name + " " + transform.position);
                 }
                 if (other.CompareTag("OuterWall") || other.CompareTag("Exit") || other.CompareTag("Enter"))
                 {
                     Destroy(gameObject);
-                    //Debug.Log(other.name + " " + transform.position);
+                }
+                if (other.CompareTag("Torch"))
+                {
+                    other.GetComponent<Torch>().Light();
+                    Destroy(gameObject);
                 }
             }
         }

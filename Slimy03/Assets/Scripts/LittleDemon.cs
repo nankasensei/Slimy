@@ -1,11 +1,15 @@
-﻿using System.Collections;
+﻿/*---------------------------------------Little Demon Script----------------------------------------
+ The Hit, Horizontal, Vertical parameters are not being used, only Magnitude works
+ */
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class LittleDemon : Enemy
 {
     //private Vector3 movementDirection;
-    private const float ATK = 2;
+    private const float ATK = 5;
     private float attackRadius;
     private Timer attackTimer;
     public Transform attackPos;
@@ -30,10 +34,9 @@ public class LittleDemon : Enemy
         transform.rotation = Quaternion.Euler(90, 0, 0);
         isAlive = true;
         isInvokeSet = false;
-        HP_MAX = 9;
         hp = HP_MAX;
         attackRadius = 0.4f;
-        buffHp = 5;
+        buffHp = 15;
         mainTimer = new Timer();
         mainTimer.Start();
         attackTimer = new Timer();
@@ -42,50 +45,53 @@ public class LittleDemon : Enemy
     // Update is called once per frame
     void Update()
     {
-        if(mainTimer.elapasedTime > 2)
+        if(isAlive)
         {
-            BodyDir();
-
-            animator.SetFloat("Magnitude", agent.desiredVelocity.magnitude);
-
-            if ((GameObject.Find("Player").transform.position - transform.position).magnitude < float.MaxValue)
+            if (mainTimer.elapasedTime > 2 && GameObject.Find("Player").GetComponent<PlayerController>().isAlive)
             {
-                CancelInvoke("Stroll");
-                isInvokeSet = false;
+                BodyDir();
 
-                agent.SetDestination(GameObject.Find("Player").transform.position);
-            }
-            else
-            {
-                if (!isInvokeSet)
+                animator.SetFloat("Magnitude", agent.desiredVelocity.magnitude);
+
+                if ((GameObject.Find("Player").transform.position - transform.position).magnitude < float.MaxValue)
                 {
-                    InvokeRepeating("Stroll", 1.0f, 3.0f);
-                    isInvokeSet = true;
+                    CancelInvoke("Stroll");
+                    isInvokeSet = false;
+
+                    agent.SetDestination(GameObject.Find("Player").transform.position);
                 }
-            }
-
-            //start walking
-            if (agent.desiredVelocity.magnitude > 0.1f)
-            {
-                direction = new Vector2(agent.desiredVelocity.x, agent.desiredVelocity.z).normalized;
-
-                attackPos.LookAt(GameObject.Find("Player").transform);
-            }
-            else if (isInvokeSet == false)
-            {
-                Vector3 vector = GameObject.Find("Player").transform.position - transform.position;
-                Vector2 direction = new Vector2(vector.x, vector.z).normalized;
-
-                attackPos.LookAt(GameObject.Find("Player").transform);
-            }
-
-            //start attacking
-            if (agent.desiredVelocity.magnitude < 0.1f && (GameObject.Find("Player").transform.position - transform.position).magnitude < 3.0f)
-            {
-                if (attackTimer.elapasedTime > 2)
+                else
                 {
-                    Attack();
-                    attackTimer.Start(); //restart the timer to count down
+                    if (!isInvokeSet)
+                    {
+                        InvokeRepeating("Stroll", 1.0f, 3.0f);
+                        isInvokeSet = true;
+                    }
+                }
+
+                //start walking
+                if (agent.desiredVelocity.magnitude > 0.1f)
+                {
+                    direction = new Vector2(agent.desiredVelocity.x, agent.desiredVelocity.z).normalized;
+
+                    attackPos.LookAt(GameObject.Find("Player").transform);
+                }
+                else if (isInvokeSet == false)
+                {
+                    Vector3 vector = GameObject.Find("Player").transform.position - transform.position;
+                    Vector2 direction = new Vector2(vector.x, vector.z).normalized;
+
+                    attackPos.LookAt(GameObject.Find("Player").transform);
+                }
+
+                //start attacking
+                if (agent.desiredVelocity.magnitude < 0.1f && (GameObject.Find("Player").transform.position - transform.position).magnitude < 3.0f)
+                {
+                    if (attackTimer.elapasedTime > 2)
+                    {
+                        Attack();
+                        attackTimer.Start(); //restart the timer to count down
+                    }
                 }
             }
         }
@@ -124,6 +130,7 @@ public class LittleDemon : Enemy
         agent.speed = 0.0f;
         spriteRenderer.color = new Color(90f / 255f, 90f / 255f, 90f / 255f);
         hp = 0;
+        hpBar.SetActive(false);
         GameManager.instance.enemies.Remove(gameObject);
         //GameManager.instance.EnemiesCleared();//detect if all enemies cleared
         //GetComponent<Collider>().isTrigger = true;

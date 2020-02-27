@@ -7,7 +7,6 @@ public class Rock : Item
     // Start is called before the first frame update
     void Start()
     {
-        HP_MAX = 8.0f;
         hp = HP_MAX;
         isAlive = true;
     }

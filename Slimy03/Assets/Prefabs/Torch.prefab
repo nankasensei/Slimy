@@ -94,7 +94,7 @@ GameObject:
   - component: {fileID: -1210523823576580207}
   m_Layer: 0
   m_Name: Torch
-  m_TagString: Untagged
+  m_TagString: Torch
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -157,7 +157,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ae485a0ed016d24f84e255c8ff01ca7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spriteMask: {fileID: 329295928773442664}
+  spriteMask: {fileID: 3078421831181083294}
+  animator: {fileID: 298924406273217937}
   flickTime: 0.2
   addSize: 0.02
 --- !u!1 &298924406273217939
@@ -230,7 +231,7 @@ SpriteRenderer:
   m_SortingLayerID: -1278877931
   m_SortingLayer: 4
   m_SortingOrder: 1
-  m_Sprite: {fileID: 7509860518518112746, guid: 0724654a166c6fd42b2dc83187150562,
+  m_Sprite: {fileID: 8954718260495684846, guid: 0724654a166c6fd42b2dc83187150562,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -287,7 +288,7 @@ Transform:
   m_GameObject: {fileID: 2945961657454840828}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 1}
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1}
   m_Children: []
   m_Father: {fileID: 329295928773442664}
   m_RootOrder: 0
@@ -355,7 +356,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &329295928773442664
 Transform:
   m_ObjectHideFlags: 0
@@ -398,7 +399,7 @@ Transform:
   m_GameObject: {fileID: 4492531060284628719}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.8, y: 0.8, z: 1}
+  m_LocalScale: {x: 0.7, y: 0.7, z: 1}
   m_Children: []
   m_Father: {fileID: 329295928773442664}
   m_RootOrder: 1
