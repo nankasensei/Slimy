@@ -6,6 +6,10 @@ public class Torch : MonoBehaviour
 {
     public GameObject spriteMask;
     public Animator animator;
+    public AudioSource audioSource;
+    public AudioClip lightClip;
+    public float lightVolume;
+    public bool isLight;
 
     [Range(0.05f, 0.2f)]
     public float flickTime;
@@ -20,6 +24,7 @@ public class Torch : MonoBehaviour
     {
         time = 0f;
         isBecomingLarger = false;
+        isLight = false;
 
         if (GameManager.instance.level > 3)
             Light();
@@ -49,7 +54,13 @@ public class Torch : MonoBehaviour
 
     public void Light()
     {
-        spriteMask.SetActive(true);
-        animator.SetBool("isLight", true);
+        if(!isLight)
+        {
+            spriteMask.SetActive(true);
+            animator.SetBool("isLight", true);
+            if (GameManager.instance.level <= 3)
+                audioSource.PlayOneShot(lightClip, lightVolume);
+            isLight = true;
+        }
     }
 }

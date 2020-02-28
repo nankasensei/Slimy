@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class BossBody : MonoBehaviour
+public class BossArm : MonoBehaviour
 {
     public float HP_MAX;
     public bool isAlive;
     public Animator animator;
     public SpriteRenderer spriteRenderer;
-    public AudioSource audioSource;
-    public AudioClip superGrowlClip;
+    public GameObject explosion;
     public RectTransform hitpoints;
     public GameObject hpBar;
 
@@ -29,7 +28,6 @@ public class BossBody : MonoBehaviour
         isAlive = true;
         hp = HP_MAX;
         dieTimer = new Timer();
-        audioSource.PlayOneShot(superGrowlClip, 0.2f);
     }
 
     // Update is called once per frame
@@ -42,8 +40,8 @@ public class BossBody : MonoBehaviour
     {
         if (data.victim == gameObject && isAlive)
         {
-            hp -= data.tama.GetComponent<Tama>().damage;
-            hitpoints.localScale = new Vector3(hp/ HP_MAX, 1, 1);
+            hp -= data.tama.GetComponent<Tama>().damage * GameObject.Find("Player").GetComponent<PlayerController>().ATK;
+            hitpoints.localScale = new Vector3(hp / HP_MAX, 1, 1);
 
             if (hp <= 0)
             {
@@ -54,10 +52,21 @@ public class BossBody : MonoBehaviour
 
     void DieProgress()
     {
-        if (dieTimer.isStart)
+        if(dieTimer.isStart)
         {
-            if (dieTimer.elapasedTime < 0.7f)
+            if(dieTimer.elapasedTime < 0.7f)
             {
+                float unitDistance = 1 + Mathf.Sin(Mathf.PI + 0.5f * Mathf.PI * dieTimer.elapasedTime / 0.7f);
+                if (gameObject.name == "RightArm")
+                {
+                    transform.position = transform.position + new Vector3(-0.15f * unitDistance, 0, -0.3f * unitDistance);
+                    transform.localEulerAngles = new Vector3(90, 0, 100 * unitDistance + 39);
+                }
+                else
+                {
+                    transform.position = transform.position + new Vector3(0.15f * unitDistance, 0, -0.3f * unitDistance);
+                    transform.localEulerAngles = new Vector3(90, 0, -100 * unitDistance + 127);
+                }
             }
             else
             {
@@ -68,13 +77,22 @@ public class BossBody : MonoBehaviour
 
     public void Die()
     {
-        audioSource.PlayOneShot(superGrowlClip, 0.2f);
+        Instantiate(explosion, transform.position, Quaternion.Euler(90, 0, 0));
+        Boss boss = GameObject.Find("Boss(Clone)").GetComponent<Boss>();
         isAlive = false;
         animator.enabled = false;
         spriteRenderer.color = new Color(90f / 255f, 90f / 255f, 90f / 255f);
         hp = 0;
         hpBar.SetActive(false);
+        transform.parent = null;
+        if(gameObject.name == "LeftArm")
+            boss.leftArm = null;
+        else
+            boss.rightArm = null;
+        boss.audioSource.PlayOneShot(boss.growlClip, boss.growlVolume);
+        transform.rotation = Quaternion.Euler(90, 0, 0);
         GetComponent<Collider>().isTrigger = true;
+
         dieTimer.Start();
     }
 

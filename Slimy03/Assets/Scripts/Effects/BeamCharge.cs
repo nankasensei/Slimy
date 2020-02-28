@@ -6,12 +6,13 @@ public class BeamCharge : MonoBehaviour
 {
     public AudioSource audioSource;
     public AudioClip chargeClip;
+    public float chargeVolume;
 
     // Start is called before the first frame update
     void Start()
     {
         audioSource.clip = chargeClip;
-        audioSource.volume = 0.04f;
+        audioSource.volume = chargeVolume;
         audioSource.Play();
     }
 

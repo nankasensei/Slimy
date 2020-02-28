@@ -32,18 +32,21 @@ public class Tama : MonoBehaviour
                 {
                     SlimyEvents.hitEvent.Invoke(new HitEventData(player, other, gameObject));
                     Destroy(gameObject);
-                    //Debug.Log(hit.transform.name + " " + transform.position);
                 }
                 if (other.CompareTag("BossBody") && other.GetComponent<BossBody>().isAlive)
                 {
                     SlimyEvents.hitEvent.Invoke(new HitEventData(player, other, gameObject));
                     Destroy(gameObject);
-                    Debug.Log(hit.transform.name + " " + transform.position);
                 }
-                if (other.CompareTag("Pot") || other.CompareTag("Rock"))
+                if (other.CompareTag("breakableItem"))
                 {
                     Item item = other.GetComponent<Item>();
-                    item.TakeDamage(damage);
+                    item.TakeDamage(damage * GameObject.Find("Player").GetComponent<PlayerController>().ATK);
+                    Destroy(gameObject);
+                }
+                if (other.CompareTag("unbreakableItem"))
+                {
+                    other.GetComponent<Item>().Buff();
                     Destroy(gameObject);
                 }
                 if (other.CompareTag("OuterWall") || other.CompareTag("Exit") || other.CompareTag("Enter"))

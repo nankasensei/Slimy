@@ -6,7 +6,9 @@ public class Item : MonoBehaviour
 {
     public float HP_MAX;
     public float hp;
-
+    public AudioSource audioSource;
+    public AudioClip breakingClip;
+    public float breakingVolume;
     public SpriteRenderer spriteRenderer;
 
     protected bool isAlive;
@@ -16,10 +18,13 @@ public class Item : MonoBehaviour
         hp -= damage;
         if (hp <= 0 && isAlive == true)
         {
-            isAlive = false;
-            spriteRenderer.color = new Color(90f / 255f, 90f / 255f, 90f / 255f);
-            hp = 0;
-            GetComponent<Collider>().isTrigger = true;
+            GameManager.instance.audioSourceOfOneShot.PlayOneShot(breakingClip, breakingVolume);
+            //isAlive = false;
+            //spriteRenderer.color = new Color(90f / 255f, 90f / 255f, 90f / 255f);
+            //hp = 0;
+            //GetComponent<Collider>().isTrigger = true;
+            Buff();
+            Gone();
         }
     }
 

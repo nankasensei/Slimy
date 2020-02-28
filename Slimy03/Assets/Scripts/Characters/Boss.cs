@@ -14,11 +14,18 @@ public class Boss : MonoBehaviour
     public AudioClip shootClip;
     public AudioClip beamClip;
     public AudioClip growlClip;
+    public AudioClip superGrowlClip;
+    public float shootVolume;
+    public float beamVolume;
+    public float growlVolume;
+    public float superGrowlVolume;
+    public bool isAlive;
 
     private Timer mainTimer;
     private Timer summonTimer;
     private Timer fireworkLoopTimer;
     private Timer beamLoopTimer;
+    private Timer dieTimer;
 
     public GameObject LittleDemon;
 
@@ -29,14 +36,17 @@ public class Boss : MonoBehaviour
 
     public GameObject beamPrefab;
     public GameObject beamChargePrefab;
+    public GameObject explosionPrefab;
     public float BEAM_BASE_SPEED = 1.0f;
     public Timer beamTimer;
     private int beamStep;
     private float lastBeamtime;
+    private int dieStep;
 
     // Start is called before the first frame update
     void Start()
     {
+        isAlive = true;
         mainTimer = new Timer();
         mainTimer.Start();
         summonTimer = new Timer();
@@ -44,12 +54,13 @@ public class Boss : MonoBehaviour
         beamTimer = new Timer();
         fireworkLoopTimer = new Timer();
         beamLoopTimer = new Timer();
+        dieTimer = new Timer();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(body.GetComponent<BossBody>().isAlive)
+        if (body.GetComponent<BossBody>().isAlive)
         {
             if (mainTimer.elapasedTime > 2 && GameObject.Find("Player").GetComponent<PlayerController>().isAlive)
             {
@@ -121,19 +132,9 @@ public class Boss : MonoBehaviour
         }
         else
         {
-            if (leftArm != null)
-                leftArm.GetComponent<BossArm>().Die();
-            if (rightArm != null)
-                rightArm.GetComponent<BossArm>().Die();
-            for(int i = 0;i < GameManager.instance.enemies.Count;i++)
-            {
-                GameManager.instance.enemies[i].GetComponent<LittleDemon>().Die();
-            }
-            if (GameObject.Find("BeamCharge(Clone)") != null)
-            {
-                Destroy(GameObject.Find("BeamCharge(Clone)"));
-            }
-            audioSource.Stop();
+            if (!dieTimer.isStart && isAlive)
+                dieTimer.Start();
+            DieProgress();
         }
     }
 
@@ -164,7 +165,7 @@ public class Boss : MonoBehaviour
             Destroy(GameObject.Find("BeamCharge(Clone)"));
         }
         audioSource.clip = beamClip;
-        audioSource.volume = 0.07f;
+        audioSource.volume = beamVolume;
         audioSource.PlayDelayed(1);
     }
 
@@ -284,8 +285,66 @@ public class Boss : MonoBehaviour
         fireballScript.boss = gameObject;
         fireballScript.velocity = shootingDirection * FIREBALL_BASE_SPEED;
 
-        audioSource.PlayOneShot(shootClip, 0.03f);
+        audioSource.PlayOneShot(shootClip, shootVolume);
 
         Destroy(fireball, 3.0f);
+    }
+
+    void RandomExplosion()
+    {
+        float x = Random.Range(transform.position.x - 1, transform.position.x + 1);
+        float z = Random.Range(transform.position.z - 1.7f, transform.position.z + 0.7f);
+        Instantiate(explosionPrefab, new Vector3(x, 0.5f, z), Quaternion.Euler(90, 0, 0));
+    }
+
+    void DieProgress()
+    {
+        if (dieTimer.isStart)
+        {
+            switch (dieStep)
+            {
+                case 0:
+                    Die();
+                    for (int i = 0; i < 5; i++)
+                    {
+                        Invoke("RandomExplosion", (i + 1) * 0.2f);
+                    }
+                    dieStep++;
+                    break;
+                case 1:
+                    if (dieTimer.elapasedTime > 0.5f)
+                    {
+                        audioSource.PlayOneShot(superGrowlClip, superGrowlVolume);
+                        dieStep++;
+                    }
+                    break;
+                case 2:
+                    if (dieTimer.elapasedTime > 1)
+                    {
+                        isAlive = false;
+                        SlimyEvents.gameClearEvent.Invoke();
+                        dieTimer.Stop();
+                    }
+                    break;
+            }
+        }
+    }
+
+
+    void Die()
+    {
+        if (leftArm != null)
+            leftArm.GetComponent<BossArm>().Die();
+        if (rightArm != null)
+            rightArm.GetComponent<BossArm>().Die();
+        while(GameManager.instance.enemies.Count > 0)
+        {
+            GameManager.instance.enemies[0].GetComponent<LittleDemon>().Die();
+        }
+        if (GameObject.Find("BeamCharge(Clone)") != null)
+        {
+            Destroy(GameObject.Find("BeamCharge(Clone)"));
+        }
+        audioSource.Stop();
     }
 }

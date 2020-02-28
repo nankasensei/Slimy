@@ -898,7 +898,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5614f72f1807e624da20eb6c60112ad3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP_MAX: 200
+  HP_MAX: 150
   isAlive: 0
   animator: {fileID: 8266598445328630719}
   spriteRenderer: {fileID: 8266598445328630718}
@@ -1085,6 +1085,7 @@ MonoBehaviour:
   spriteRenderer: {fileID: 8266598444779426905}
   audioSource: {fileID: 8381445194162175332}
   superGrowlClip: {fileID: 8300000, guid: 42c666e54f27f5949b18d16c6149330e, type: 3}
+  growlVolume: 0.4
   hitpoints: {fileID: 8325345662811001991}
   hpBar: {fileID: 4829412300139893170}
 --- !u!82 &8381445194162175332
@@ -1329,7 +1330,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5614f72f1807e624da20eb6c60112ad3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP_MAX: 200
+  HP_MAX: 150
   isAlive: 0
   animator: {fileID: 8266598444013769909}
   spriteRenderer: {fileID: 8266598444013769908}
@@ -1409,6 +1410,12 @@ MonoBehaviour:
   shootClip: {fileID: 8300000, guid: c5dab48b4ef2c014c88d1b5903dc8145, type: 3}
   beamClip: {fileID: 8300000, guid: e465f943893594f45b82d4d1c71adbb0, type: 3}
   growlClip: {fileID: 8300000, guid: 63c4025874287d045bad79eacda26b9e, type: 3}
+  superGrowlClip: {fileID: 8300000, guid: 42c666e54f27f5949b18d16c6149330e, type: 3}
+  shootVolume: 0.2
+  beamVolume: 0.2
+  growlVolume: 0.1
+  superGrowlVolume: 0.5
+  isAlive: 0
   LittleDemon: {fileID: 7489798276851730335, guid: 60a1a482359df034fbfe29ca2cfbf731,
     type: 3}
   fireballPrefab: {fileID: 1299399454371565397, guid: 9469622cc6b1f5740b05b0102073b1ec,
@@ -1418,7 +1425,9 @@ MonoBehaviour:
     type: 3}
   beamChargePrefab: {fileID: 5526946820350778269, guid: 96c94dd62d2b7714a95f0549e2c1760a,
     type: 3}
-  BEAM_BASE_SPEED: 15
+  explosionPrefab: {fileID: 4203374864647272111, guid: 7a57efe61cbfcc24fb141d9e3e775bc1,
+    type: 3}
+  BEAM_BASE_SPEED: 20
 --- !u!82 &1208247442565903172
 AudioSource:
   m_ObjectHideFlags: 0

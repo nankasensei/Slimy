@@ -10,7 +10,9 @@ public class GameManager : MonoBehaviour
     public List<GameObject> enemies;//added in BoardManager
     public AudioSource audioSource;
     public AudioSource audioSourceBGM;
+    public AudioSource audioSourceOfOneShot;
     public AudioClip bossBGM;
+    public float bosssBGMVolume;
     public GameObject playerPrefab;
     public Timer sceneStartTimer;
 
@@ -50,6 +52,7 @@ public class GameManager : MonoBehaviour
                 if(level >= 4)
                 {
                     audioSourceBGM.clip = bossBGM;
+                    audioSourceBGM.volume = bosssBGMVolume;
                     audioSourceBGM.Play();
                 }
                 sceneStartTimer.Stop();

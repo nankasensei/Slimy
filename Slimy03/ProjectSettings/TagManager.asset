@@ -13,6 +13,8 @@ TagManager:
   - Arm
   - BossBody
   - Torch
+  - unbreakableItem
+  - breakableItem
   layers:
   - Default
   - TransparentFX

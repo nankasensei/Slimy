@@ -12,6 +12,7 @@ public class Enemy : MonoBehaviour
     public float HP_MAX;
     public AudioSource audioSource;
     public AudioClip hittingClip;
+    public float hittingVolume;
     public RectTransform hitpoints;
     public GameObject hpBar;
 
@@ -36,10 +37,10 @@ public class Enemy : MonoBehaviour
 
             animator.SetTrigger("Hit");
 
-            hp -= data.tama.GetComponent<Tama>().damage;
+            hp -= data.tama.GetComponent<Tama>().damage * GameObject.Find("Player").GetComponent<PlayerController>().ATK;
             hitpoints.localScale = new Vector3(hp / HP_MAX, 1, 1);
 
-            audioSource.PlayOneShot(hittingClip, 0.4f);
+            audioSource.PlayOneShot(hittingClip, hittingVolume);
             if (hp <= 0)
             {
                 Die();

@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Rock : Item
 {
+    public GameObject brokenStoneDEF;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -13,6 +15,6 @@ public class Rock : Item
 
     public override void Buff()
     {
-        GameObject.Find("Player").GetComponent<PlayerController>().SetDef(1.0f, 8.0f);
+        Instantiate(brokenStoneDEF, transform.position, Quaternion.Euler(90, 0, 0));
     }
 }

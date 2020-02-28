@@ -2,17 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Pot : Item
+public class AudioController : MonoBehaviour
 {
+    public AudioSource audioSource;
     // Start is called before the first frame update
     void Start()
     {
-        hp = HP_MAX;
-        isAlive = true;
+        
     }
 
-    public override void Buff()
+    // Update is called once per frame
+    void Update()
     {
-
+        
     }
 }

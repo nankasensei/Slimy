@@ -9,6 +9,7 @@ public static class SlimyEvents
     public static DieEvent dieEvent = new DieEvent();
     public static GameStartEvent gameStartEvent = new GameStartEvent();
     public static LevelStartEvent levelStartEvent = new LevelStartEvent();
+    public static GameClearEvent gameClearEvent = new GameClearEvent();
 }
 
 public class HitEvent : UnityEvent<HitEventData> { }
@@ -45,5 +46,7 @@ public class HitEventData
 public class DieEvent : UnityEvent{}
 
 public class GameStartEvent : UnityEvent{}
+
+public class GameClearEvent : UnityEvent { }
 
 public class LevelStartEvent : UnityEvent{}

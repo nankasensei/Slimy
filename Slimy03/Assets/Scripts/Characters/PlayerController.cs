@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour
     public float movementSpeed;
     public float hp;
     public float defence;
+    public float attack;
     public bool isAlive;
 
     [Header("Player attributes")]
@@ -18,6 +19,7 @@ public class PlayerController : MonoBehaviour
     public float TAMA_BASE_SPEED = 1.0f;
     public int TAMA_COST = 1;
     public float DEF = 1;
+    public float ATK = 1;
     public float TAMA_RATE = 0.33f;
 
 
@@ -31,6 +33,11 @@ public class PlayerController : MonoBehaviour
     public AudioClip attacking;
     public AudioClip hitting;
     public AudioClip dying;
+    public float walkingVolume;
+    public float swallowingVolume;
+    public float attackingVolume;
+    public float hittingVolume;
+    public float dyingVolume;
 
     [Header("Prefabs")]
     public GameObject slimyTama;
@@ -54,6 +61,7 @@ public class PlayerController : MonoBehaviour
     {
         hp = GameManager.instance.playerHp;
         defence = DEF;
+        attack = ATK;
         isAlive = true;
         movementSpeedOffset = 1f;
         tamaPrefab = slimyTama;
@@ -63,13 +71,13 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(hp);
+        //Debug.Log(hp);
         if(!GameManager.instance.sceneStartTimer.isStart && isAlive)
         {
             ProcessInputs();
+            Move();
+            ShootWithMouse();
         }
-        Move();
-        ShootWithMouse();
     }
 
     private void OnDisable()
@@ -113,6 +121,16 @@ public class PlayerController : MonoBehaviour
     public void SetHp(float offset)
     {
         hp += offset;
+        if(offset > 0)
+        {
+            effect.Stop(); // Cannot set duration whilst Particle System is playing
+
+            var main = effect.main;
+            main.duration = 1.0f;
+            main.startColor = new Color(0.31f, 0.95f, 0.66f, 1);
+
+            effect.Play();
+        }
         StateSetup();
     }
 
@@ -123,9 +141,17 @@ public class PlayerController : MonoBehaviour
 
         if(offset > 0)
         {
+            effect.Stop(); // Cannot set duration whilst Particle System is playing
+
+            var main = effect.main;
+            main.duration = 8.0f;
+            main.startColor = new Color(0.943f, 0.524f, 0.302f, 1);
+
             effect.Play();
+
             yield return new WaitForSeconds(time);
             defence = DEF;
+            StateSetup();
         }
     }
 
@@ -133,9 +159,35 @@ public class PlayerController : MonoBehaviour
     {
         StartCoroutine(SetDefence(offset, time));
     }
-    
+
+    public IEnumerator SetAttack(float offset, float time)
+    {
+        attack = ATK + offset;
+        StateSetup();
+
+        if (offset > 0)
+        {
+            effect.Stop(); // Cannot set duration whilst Particle System is playing
+
+            var main = effect.main;
+            main.duration = 8.0f;
+            main.startColor = new Color(0.6821f, 0, 1, 1);
+
+            effect.Play();
+
+            yield return new WaitForSeconds(time);
+            defence = ATK;
+            StateSetup();
+        }
+    }
+
+    public void SetAtk(float offset, float time)
+    {
+        StartCoroutine(SetAttack(offset, time));
+    }
+
     //upgrade the state
-    void StateSetup()
+    public void StateSetup()
     {
         if(hp <= 0)
             Die();
@@ -169,6 +221,11 @@ public class PlayerController : MonoBehaviour
             defence = 2.0f;
         else if(defence < 0.5f)
             defence = 0.5f;
+
+        if (attack > 2.0f)
+            attack = 2.0f;
+        else if (attack < 0.5f)
+            attack = 0.5f;
     }
 
     void Move()
@@ -176,6 +233,7 @@ public class PlayerController : MonoBehaviour
         rb.velocity = movementDirection * movementSpeed * MOVEMENT_BASE_SPEED * movementSpeedOffset;
 
         audioSource.clip = walking;
+        audioSource.volume = walkingVolume;
         if(rb.velocity.magnitude != 0 && !audioSource.isPlaying) audioSource.Play();
     }
 
@@ -195,7 +253,7 @@ public class PlayerController : MonoBehaviour
             lastShotTime = Time.time;
             Destroy(tama, 3.0f);
 
-            audioSource.PlayOneShot(attacking, 0.2f);
+            audioSource.PlayOneShot(attacking, attackingVolume);
 
             hp -= TAMA_COST;
             StateSetup();
@@ -215,7 +273,7 @@ public class PlayerController : MonoBehaviour
 
         Destroy(tama, 3.0f);
 
-        audioSource.PlayOneShot(attacking, 0.2f);
+        audioSource.PlayOneShot(attacking, attackingVolume);
 
         hp -= TAMA_COST;
         StateSetup();
@@ -231,7 +289,7 @@ public class PlayerController : MonoBehaviour
             animator.SetFloat("Vertical", damageDirection.y);
             animator.SetTrigger("Hit");
 
-            audioSource.PlayOneShot(hitting, 0.2f);
+            audioSource.PlayOneShot(hitting, hittingVolume);
 
             hp -= data.meleeDamage  / defence;
             
@@ -242,11 +300,12 @@ public class PlayerController : MonoBehaviour
     void Die()
     {
         isAlive = false;
-        audioSource.PlayOneShot(dying, 0.15f);
+        audioSource.PlayOneShot(dying, dyingVolume);
         animator.enabled = false;
         spriteRenderer.color = new Color(90f / 255f, 90f / 255f, 90f / 255f);
         movementDirection = Vector3.zero;
         //this.enabled = false;
+        rb.velocity = Vector3.zero;
         SlimyEvents.dieEvent.Invoke();
     }
 
@@ -258,18 +317,16 @@ public class PlayerController : MonoBehaviour
             enterExitY = transform.position.z;
         }
 
-        if (other.tag == "Rock" || other.tag == "Pot")
+        if (other.tag == "unbreakableItem")
         {
-            audioSource.PlayOneShot(swallowing, 0.3f);
-            //other.gameObject.GetComponent<Item>().Buff();
-            SetDef(1.0f, 8.0f);
+            audioSource.PlayOneShot(swallowing, swallowingVolume);
+            other.gameObject.GetComponent<Item>().Buff();
             other.gameObject.GetComponent<Item>().Gone();
-            StateSetup();
         }
 
         if (other.tag == "Enemy" && !other.GetComponent<Enemy>().isAlive)
         {
-            audioSource.PlayOneShot(swallowing, 0.3f);
+            audioSource.PlayOneShot(swallowing, swallowingVolume);
 
             other.gameObject.GetComponent<Enemy>().Buff();
             other.gameObject.GetComponent<Enemy>().Gone();
@@ -277,7 +334,7 @@ public class PlayerController : MonoBehaviour
 
         if (other.tag == "Arm" && !other.GetComponent<BossArm>().isAlive)
         {
-            audioSource.PlayOneShot(swallowing, 0.3f);
+            audioSource.PlayOneShot(swallowing, swallowingVolume);
 
             eatArmCount++;
             if (eatArmCount == 2)
@@ -285,9 +342,9 @@ public class PlayerController : MonoBehaviour
             other.gameObject.GetComponent<BossArm>().Gone();
         }
 
-        if (other.tag == "BossBody" && !other.GetComponent<BossBody>().isAlive)
+        if (other.tag == "BossBody" && !GameObject.Find("Boss(Clone)").GetComponent<Boss>().isAlive)
         {
-            audioSource.PlayOneShot(swallowing, 0.3f);
+            audioSource.PlayOneShot(swallowing, swallowingVolume);
 
             other.gameObject.GetComponent<BossBody>().Buff();
             //other.gameObject.GetComponent<BossBody>().Gone();

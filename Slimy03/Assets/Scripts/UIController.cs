@@ -6,12 +6,14 @@ public class UIController : MonoBehaviour
 {
     public GameObject gameStartUI;
     public GameObject gameOverUI;
+    public GameObject gameClearUI;
     // Start is called before the first frame update
     void Start()
     {
         SlimyEvents.dieEvent.AddListener(GameOver);
         SlimyEvents.gameStartEvent.AddListener(GameStart);
         SlimyEvents.levelStartEvent.AddListener(LevelStart);
+        SlimyEvents.gameClearEvent.AddListener(GameClear);
     }
 
     // Update is called once per frame
@@ -28,6 +30,11 @@ public class UIController : MonoBehaviour
     void GameStart()
     {
         gameStartUI.SetActive(false);
+    }
+
+    void GameClear()
+    {
+        gameClearUI.SetActive(true);
     }
 
     void LevelStart()

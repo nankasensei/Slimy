@@ -425,6 +425,7 @@ MonoBehaviour:
   HP_MAX: 50
   audioSource: {fileID: 1675207111528853173}
   hittingClip: {fileID: 8300000, guid: 78b132ffc68feba4d9bb8dfdde9770b7, type: 3}
+  hittingVolume: 0.8
   hitpoints: {fileID: 6937241792299997027}
   hpBar: {fileID: 3105846293084286399}
   isAlive: 0
