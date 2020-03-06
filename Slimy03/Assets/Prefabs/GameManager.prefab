@@ -157,7 +157,7 @@ MonoBehaviour:
   bosssBGMVolume: 0.15
   playerPrefab: {fileID: 3235989013604411370, guid: 2ac87ce293dc0cb46adf0dd250c1ca6a,
     type: 3}
-  level: 4
+  level: 2
 --- !u!114 &942613183730629844
 MonoBehaviour:
   m_ObjectHideFlags: 0

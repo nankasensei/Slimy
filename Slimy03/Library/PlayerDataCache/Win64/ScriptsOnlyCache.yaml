@@ -1,12 +1,22 @@
 ScriptsOnlyBuild:
   usedScripts:
     Assembly-CSharp.dll:
+    - BeamCharge
     - BoardManager
+    - Boss
+    - BossArm
+    - BossBody
+    - BrokenStone
     - EnemyRat
+    - Explosion
+    - Fireball
     - GameManager
+    - LittleDemon
     - Loader
+    - Mushroom
     - PlayerController
     - Pot
+    - Raspberry
     - Rock
     - Tama
     - Torch
@@ -22,12 +32,8 @@ ScriptsOnlyBuild:
     UnityEditor.Graphs.dll:
     - UnityEditor.Graphs.AnimationBlendTree.Graph
     - UnityEditor.Graphs.AnimationBlendTree.GraphGUI
-    - UnityEditor.Graphs.AnimationBlendTree.Node
-    - UnityEditor.Graphs.AnimationStateMachine.AnyStateNode
     - UnityEditor.Graphs.AnimationStateMachine.Graph
     - UnityEditor.Graphs.AnimationStateMachine.GraphGUI
-    - UnityEditor.Graphs.AnimationStateMachine.StateNode
-    - UnityEditor.Graphs.AnimatorControllerTool
     UnityEditor.TestRunner.dll:
     - UnityEditor.TestTools.TestRunner.Api.CallbacksHolder
     - UnityEditor.TestTools.TestRunner.TestListCacheData
@@ -74,41 +80,61 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 9676}
     - Class: 114
-      Script: {instanceID: 9790}
+      Script: {instanceID: 9746}
     - Class: 114
-      Script: {instanceID: 9844}
+      Script: {instanceID: 9794}
     - Class: 114
-      Script: {instanceID: 9884}
+      Script: {instanceID: 9848}
     - Class: 114
-      Script: {instanceID: 9992}
+      Script: {instanceID: 9878}
     - Class: 114
-      Script: {instanceID: 9996}
+      Script: {instanceID: 9890}
     - Class: 114
-      Script: {instanceID: 10326}
+      Script: {instanceID: 9998}
     - Class: 114
-      Script: {instanceID: 10486}
+      Script: {instanceID: 10002}
     - Class: 114
-      Script: {instanceID: 10616}
+      Script: {instanceID: 10182}
     - Class: 114
-      Script: {instanceID: 10646}
+      Script: {instanceID: 10218}
     - Class: 114
-      Script: {instanceID: 10734}
+      Script: {instanceID: 10234}
     - Class: 114
-      Script: {instanceID: 10818}
+      Script: {instanceID: 10340}
     - Class: 114
-      Script: {instanceID: 10972}
+      Script: {instanceID: 10502}
     - Class: 114
-      Script: {instanceID: 10986}
+      Script: {instanceID: 10532}
     - Class: 114
-      Script: {instanceID: 11238}
+      Script: {instanceID: 10632}
     - Class: 114
-      Script: {instanceID: 11568}
+      Script: {instanceID: 10648}
     - Class: 114
-      Script: {instanceID: 11634}
+      Script: {instanceID: 10658}
     - Class: 114
-      Script: {instanceID: 11686}
+      Script: {instanceID: 10666}
     - Class: 114
-      Script: {instanceID: 15472}
+      Script: {instanceID: 10754}
+    - Class: 114
+      Script: {instanceID: 10838}
+    - Class: 114
+      Script: {instanceID: 10992}
+    - Class: 114
+      Script: {instanceID: 11006}
+    - Class: 114
+      Script: {instanceID: 11126}
+    - Class: 114
+      Script: {instanceID: 11260}
+    - Class: 114
+      Script: {instanceID: 11562}
+    - Class: 114
+      Script: {instanceID: 11594}
+    - Class: 114
+      Script: {instanceID: 11652}
+    - Class: 114
+      Script: {instanceID: 11662}
+    - Class: 114
+      Script: {instanceID: 11716}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -150,7 +176,7 @@ ScriptsOnlyBuild:
     className: TMP_SelectionCaret
   - hash:
       serializedVersion: 2
-      Hash: bb0c08197ee0a26a65ec664779855823
+      Hash: 850e313ecd317b3ae74b202d2ef68393
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Enemy
@@ -168,13 +194,19 @@ ScriptsOnlyBuild:
     className: TMP_Dropdown
   - hash:
       serializedVersion: 2
+      Hash: 91c506c5fb2d4e034a1f1c1629367ac4
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: Torch
+  - hash:
+      serializedVersion: 2
       Hash: e7a73f5f78ba6445195ec23b74a1ce2d
     assemblyName: Unity.TextMeshPro.dll
     namespaceName: TMPro
     className: TMP_ScrollbarEventHandler
   - hash:
       serializedVersion: 2
-      Hash: 98eef7d7916cae7193df42f0f9d8a77f
+      Hash: d581075dc13ea33c817c268af81b2db1
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: EnemyRat
@@ -210,6 +242,12 @@ ScriptsOnlyBuild:
     className: PositionAsUV1
   - hash:
       serializedVersion: 2
+      Hash: 94f2902a94935b3198342979b341918a
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: Explosion
+  - hash:
+      serializedVersion: 2
       Hash: abf1930d8126d0b2e00e9449129a0190
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.EventSystems
@@ -240,7 +278,7 @@ ScriptsOnlyBuild:
     className: GridLayoutGroup
   - hash:
       serializedVersion: 2
-      Hash: 5a47385f2c1288dc1e3fe12908127d9c
+      Hash: 39a10a372e3045b6c25f22639a5b4f22
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Rock
@@ -276,6 +314,12 @@ ScriptsOnlyBuild:
     className: PhysicsRaycaster
   - hash:
       serializedVersion: 2
+      Hash: cbeba0be93684d3bcd4b72542d830f58
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: AudioController
+  - hash:
+      serializedVersion: 2
       Hash: bd3cf68c8964d3c66d1c43f4f98508c9
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
@@ -306,10 +350,28 @@ ScriptsOnlyBuild:
     className: AnimationPlayableAsset
   - hash:
       serializedVersion: 2
+      Hash: 5001d015263957131b8323929a848eee
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: BossBody
+  - hash:
+      serializedVersion: 2
+      Hash: b28fcfabbde874b3655949ffc3c2dc57
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: Boss
+  - hash:
+      serializedVersion: 2
       Hash: aba7b2852ef61d175dd9602e7723d5e5
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.UI
     className: Mask
+  - hash:
+      serializedVersion: 2
+      Hash: a46848cdbd4a1c344b6f9ce7997e2181
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: BeamCharge
   - hash:
       serializedVersion: 2
       Hash: caa533b001ae39b864ba8425019e2268
@@ -366,7 +428,7 @@ ScriptsOnlyBuild:
     className: Test
   - hash:
       serializedVersion: 2
-      Hash: 31a8024a4ac77342078e0948e5d69c81
+      Hash: f42c02f012325df7a246ff5c0c56ec92
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: BoardManager
@@ -376,6 +438,12 @@ ScriptsOnlyBuild:
     assemblyName: Unity.TextMeshPro.dll
     namespaceName: TMPro
     className: TMP_Asset
+  - hash:
+      serializedVersion: 2
+      Hash: d581075dc13ea33c817c268af81b2db1
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: LittleDemon
   - hash:
       serializedVersion: 2
       Hash: 97ace6213ad0f149b0917a4c669c6ca3
@@ -414,7 +482,19 @@ ScriptsOnlyBuild:
     className: NavMeshModifierVolume
   - hash:
       serializedVersion: 2
-      Hash: 6baf021c52668aac93bd54474c318351
+      Hash: aceda5988775e1235d6b4bf11ce14715
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: BrokenStone
+  - hash:
+      serializedVersion: 2
+      Hash: 1f9d073106cfdaa9cb1f6218a69f8402
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: Fireball
+  - hash:
+      serializedVersion: 2
+      Hash: df0190cb03339594f1bb9ed285f8a729
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: GameManager
@@ -444,7 +524,7 @@ ScriptsOnlyBuild:
     className: RawImage
   - hash:
       serializedVersion: 2
-      Hash: 814cc6ef942606579358ce965d4cd163
+      Hash: 051272ba9acb6e906f57880b4703b736
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: PlayerController
@@ -456,7 +536,7 @@ ScriptsOnlyBuild:
     className: VerticalLayoutGroup
   - hash:
       serializedVersion: 2
-      Hash: 5a47385f2c1288dc1e3fe12908127d9c
+      Hash: aceda5988775e1235d6b4bf11ce14715
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Item
@@ -486,7 +566,7 @@ ScriptsOnlyBuild:
     className: TMP_FontAsset
   - hash:
       serializedVersion: 2
-      Hash: 41ae94593d301478cefbb702b4447f89
+      Hash: cab991a6c3199833bfa0131604c5f575
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: UIController
@@ -504,7 +584,7 @@ ScriptsOnlyBuild:
     className: ActivationPlayableAsset
   - hash:
       serializedVersion: 2
-      Hash: 5a47385f2c1288dc1e3fe12908127d9c
+      Hash: c33b094747ab028f4ffe4bc18185c757
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Pot
@@ -520,6 +600,12 @@ ScriptsOnlyBuild:
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
     className: TimelineAsset
+  - hash:
+      serializedVersion: 2
+      Hash: 2033ea5d9404de23b4f43797eb529e5c
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: Raspberry
   - hash:
       serializedVersion: 2
       Hash: ee0cef6caaac8ae485bfa82f000f0f7b
@@ -582,6 +668,12 @@ ScriptsOnlyBuild:
     className: TMP_ColorGradient
   - hash:
       serializedVersion: 2
+      Hash: aceda5988775e1235d6b4bf11ce14715
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: Mushroom
+  - hash:
+      serializedVersion: 2
       Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
     assemblyName: UnityEngine.TestRunner.dll
     namespaceName: UnityEngine.TestTools.TestRunner.Callbacks
@@ -630,6 +722,12 @@ ScriptsOnlyBuild:
     className: Dropdown
   - hash:
       serializedVersion: 2
+      Hash: 4a4e14f4bc4e1f585cbf925154ac971a
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: BossArm
+  - hash:
+      serializedVersion: 2
       Hash: 748dd2a2a28da4e618912da5ac45684b
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.EventSystems
@@ -670,13 +768,7 @@ ScriptsOnlyBuild:
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
     className: PlayableTrack
-  - hash:
-      serializedVersion: 2
-      Hash: 51248487e016cc56c1b551378fd4ec52
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: Torch
   platform: 19
   scenePathNames:
   - Assets/Scenes/Main.unity
-  playerPath: "C:/Users/pumps/OneDrive/\u684C\u9762/Slimy/Slimy03.exe"
+  playerPath: "C:/Users/bunto/Google \u30C9\u30E9\u30A4\u30D6/\u30DE\u30A4\u30B2\u30FC/compressedProjects/SlimyBuild/Slimy03.exe"
