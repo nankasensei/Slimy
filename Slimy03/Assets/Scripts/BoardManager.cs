@@ -417,10 +417,9 @@ public class BoardManager : MonoBehaviour
         LayoutObjectAtRandom(PotTiles, potMin, potMax);
         LayoutObjectAtRandom(RockTiles, rockMin, rockMax);
         LayoutObjectAtRandomWithSpace(torchTiles, torchMin, torchMax, 5);
-        //LayoutObjectAtRandom(torchTiles, torchMin, torchMax);
-        //int enemyCount = (int)Mathf.Log(level, 2f);
         int enemyCount = level;
-        LayoutObjectAtRandom(enemyTiles, enemyCount, enemyCount+1);
+        //LayoutObjectAtRandom(enemyTiles, enemyCount, enemyCount+1);
+        LayoutObjectAtRandomWithSpace(enemyTiles, enemyCount, enemyCount + 1, 4);
 
         navMeshSurface.BuildNavMesh();
     }
@@ -515,7 +514,7 @@ public class BoardManager : MonoBehaviour
 
                 index = Random.Range(0, doorTiles.Count);
                 exitX = doorTiles[index].positionX;
-                while (Mathf.Abs(enterX - exitX) < 1.1f)
+                while (Mathf.Abs(enterX - exitX) < 6.1f)
                 {
                     doorTiles.RemoveAt(index);
                     index = Random.Range(0, doorTiles.Count - 1);

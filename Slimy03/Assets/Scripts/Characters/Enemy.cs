@@ -27,7 +27,7 @@ public class Enemy : MonoBehaviour
         {
             //hit recover for 0.5s
             agent.isStopped = true;
-            Invoke("agentStart",0.5f);
+            Invoke("agentStart",0.1f);
 
             //change the direction
             Vector3 damageVector = data.shooter.transform.position - transform.position;

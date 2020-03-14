@@ -9,7 +9,8 @@ public class Loader : MonoBehaviour
 
     void Awake()
     {
-        Screen.SetResolution(2944, 1664, false);
+        //Screen.SetResolution(2944, 1664, false);
+        Screen.fullScreen = true;
         UI.SetActive(true);
     }
 

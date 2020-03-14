@@ -262,21 +262,24 @@ public class PlayerController : MonoBehaviour
 
     void ShootWithGamepad(int x, int y)
     {
-        Vector3 shootingDirection = new Vector3(x, 0.0f, y);
-        shootingDirection.Normalize();
+        if (Time.time - lastShotTime > TAMA_RATE)
+        {
+            Vector3 shootingDirection = new Vector3(x, 0.0f, y);
+            shootingDirection.Normalize();
 
-        GameObject tama = Instantiate(slimyTama, transform.position, Quaternion.Euler(90, 0, Mathf.Atan2(shootingDirection.z, shootingDirection.x) * Mathf.Rad2Deg));
+            GameObject tama = Instantiate(tamaPrefab, transform.position, Quaternion.Euler(90, 0, Mathf.Atan2(shootingDirection.z, shootingDirection.x) * Mathf.Rad2Deg));
 
-        Tama tamaScript = tama.GetComponent<Tama>();
-        tamaScript.player = gameObject;
-        tamaScript.velocity = shootingDirection * TAMA_BASE_SPEED;
+            Tama tamaScript = tama.GetComponent<Tama>();
+            tamaScript.player = gameObject;
+            tamaScript.velocity = shootingDirection * TAMA_BASE_SPEED;
+            lastShotTime = Time.time;
+            Destroy(tama, 3.0f);
 
-        Destroy(tama, 3.0f);
+            audioSource.PlayOneShot(attacking, attackingVolume);
 
-        audioSource.PlayOneShot(attacking, attackingVolume);
-
-        hp -= TAMA_COST;
-        StateSetup();
+            hp -= TAMA_COST;
+            StateSetup();
+        }
     }
 
     void TakeDamage(HitEventData data)

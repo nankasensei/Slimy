@@ -42,7 +42,7 @@ public class EnemyRat : Enemy
     // Update is called once per frame
     void Update()
     {
-        if(mainTimer.elapasedTime > 2 && GameObject.Find("Player").GetComponent<PlayerController>().isAlive)
+        if(mainTimer.elapasedTime > 2 && (GameObject.Find("Player").GetComponent<PlayerController>().isAlive || isAlive))
         {
             if ((GameObject.Find("Player").transform.position - transform.position).magnitude < 6.0f)
             {
