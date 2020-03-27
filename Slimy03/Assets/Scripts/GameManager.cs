@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -17,6 +18,7 @@ public class GameManager : MonoBehaviour
     public Timer sceneStartTimer;
 
     public int level =1;
+    public int controlMod = 0;
 
     // Start is called before the first frame update
     void Awake()
@@ -32,6 +34,7 @@ public class GameManager : MonoBehaviour
         playerHp = PlayerController.PLAYER_HP_MAX;
 
         SlimyEvents.dieEvent.AddListener(GameOver);
+        SlimyEvents.gameRestartEvent.AddListener(GameRestart);
         sceneStartTimer = new Timer();
 
         InitGame();
@@ -72,7 +75,7 @@ public class GameManager : MonoBehaviour
     {
         //GameObject.Find("UI").SetActive(false);
         sceneStartTimer.Start();
-        GameObject player = Instantiate(playerPrefab);
+        GameObject player = Instantiate(playerPrefab, Vector3.zero ,Quaternion.Euler(90, 0, 0));
         player.name = "Player";
         enemies.Clear();
         if(level > 3)
@@ -90,6 +93,15 @@ public class GameManager : MonoBehaviour
     void GameOver()
     {
     }
+
+    public void GameRestart()
+    {
+        level = 2;
+        SceneManager.LoadScene(0);
+        Destroy(gameObject);
+    }
+
+
 
      public void EnemiesCleared()
     {

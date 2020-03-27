@@ -44,7 +44,7 @@ public class EnemyRat : Enemy
     {
         if(mainTimer.elapasedTime > 2 && (GameObject.Find("Player").GetComponent<PlayerController>().isAlive || isAlive))
         {
-            if ((GameObject.Find("Player").transform.position - transform.position).magnitude < 6.0f)
+            if ((GameObject.Find("Player").transform.position - transform.position).magnitude < 4.0f)
             {
                 CancelInvoke("Stroll");
                 isInvokeSet = false;

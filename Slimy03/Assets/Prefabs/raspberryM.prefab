@@ -61,6 +61,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HP_MAX: 0
   hp: 0
+  audioSource: {fileID: 0}
+  breakingClip: {fileID: 0}
+  breakingVolume: 0
   spriteRenderer: {fileID: 8586410292453044965}
   buffHP: 10
 --- !u!1 &3218730209814720237

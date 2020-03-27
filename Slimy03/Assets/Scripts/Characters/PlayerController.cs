@@ -28,6 +28,7 @@ public class PlayerController : MonoBehaviour
     public Animator animator;
     public SpriteRenderer spriteRenderer;
     public AudioSource audioSource;
+    public DS4Controllor ds4;
     public AudioClip walking;
     public AudioClip swallowing;
     public AudioClip attacking;
@@ -99,23 +100,6 @@ public class PlayerController : MonoBehaviour
         animator.SetFloat("Magnitude", movementDirection.magnitude);
 
         endOfAiming = Input.GetMouseButtonUp(0);
-
-        if (Input.GetKeyDown("joystick button 0"))
-        {
-            ShootWithGamepad(0, -1);
-        }
-        if (Input.GetKeyDown("joystick button 1"))
-        {
-            ShootWithGamepad(1, 0);
-        }
-        if (Input.GetKeyDown("joystick button 2"))
-        {
-            ShootWithGamepad(-1, 0);
-        }
-        if (Input.GetKeyDown("joystick button 3"))
-        {
-            ShootWithGamepad(0, 1);
-        }
     }
 
     public void SetHp(float offset)
@@ -260,7 +244,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void ShootWithGamepad(int x, int y)
+    public void ShootWithGamepad(float x, float y)
     {
         if (Time.time - lastShotTime > TAMA_RATE)
         {
@@ -277,6 +261,9 @@ public class PlayerController : MonoBehaviour
 
             audioSource.PlayOneShot(attacking, attackingVolume);
 
+            ds4.Vibrate(0, 1, 0.1f);
+            ds4.Vibrate(1, 1, 0.1f);
+
             hp -= TAMA_COST;
             StateSetup();
         }
@@ -291,6 +278,9 @@ public class PlayerController : MonoBehaviour
             animator.SetFloat("Horizontal", damageDirection.x);
             animator.SetFloat("Vertical", damageDirection.y);
             animator.SetTrigger("Hit");
+
+            ds4.Vibrate(0,1,0.2f);
+            ds4.Vibrate(1, 1, 0.2f);
 
             audioSource.PlayOneShot(hitting, hittingVolume);
 

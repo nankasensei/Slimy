@@ -5,13 +5,14 @@ using UnityEngine;
 public class Loader : MonoBehaviour
 {
     public GameObject gameManager;
-    public GameObject UI;
+    public GameObject startUI;
+    public GameObject overUI;
+    public GameObject clearUI;
 
     void Awake()
     {
         //Screen.SetResolution(2944, 1664, false);
         Screen.fullScreen = true;
-        UI.SetActive(true);
     }
 
     public void OnClick()
@@ -23,9 +24,23 @@ public class Loader : MonoBehaviour
         }
     }
 
+    public void GameRestart()
+    {
+        GameManager.instance.GetComponent<GameManager>().GameRestart();
+    }
+
     // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetKeyDown("joystick button 2") && startUI.active) //circlr
+        {
+            SlimyEvents.gameStartEvent.Invoke();
+            Instantiate(gameManager);
+        }
+
+        if(Input.GetKeyDown("joystick button 2") && (overUI.active || clearUI.active))
+        {
+            GameRestart();
+        }
     }
 }

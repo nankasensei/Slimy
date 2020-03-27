@@ -14,6 +14,7 @@ public class UIController : MonoBehaviour
         SlimyEvents.gameStartEvent.AddListener(GameStart);
         SlimyEvents.levelStartEvent.AddListener(LevelStart);
         SlimyEvents.gameClearEvent.AddListener(GameClear);
+        SlimyEvents.gameRestartEvent.AddListener(GameRestart);
     }
 
     // Update is called once per frame
@@ -40,6 +41,9 @@ public class UIController : MonoBehaviour
     void LevelStart()
     {
         gameStartUI.SetActive(false);
-        Debug.Log("fsdfdsfsdfsdfd");
+    }
+
+    void GameRestart()
+    {
     }
 }
