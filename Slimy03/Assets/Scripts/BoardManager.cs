@@ -34,6 +34,7 @@ public class BoardManager : MonoBehaviour
     public GameObject[] enemyTiles;
     public GameObject[] demonTiles;
     public GameObject[] torchTiles;
+    public GameObject torch;
     public GameObject outerWall;
     public GameObject outerWallW;
     public GameObject outerWallA;
@@ -80,6 +81,7 @@ public class BoardManager : MonoBehaviour
 
     public string seed;
     public bool useRandomSeed;
+    private int floorNum;
 
     [Range(0, 100)]
     public int randomFillPercent;
@@ -371,6 +373,66 @@ public class BoardManager : MonoBehaviour
         }
     }
 
+
+    void LayoutTorch()
+    {
+        List<int>[] lists = new List<int>[4];
+        List<Vector3> removeList = new List<Vector3>();
+
+        for (int i = 0; i < gridPositions.Count; i++)
+        {
+            if(gridPositions[i].z + 1 != exitPositon.z && gridPositions[i].z - 1 != exitPositon.z)
+            {
+                if (gridPositions[i].x < width * 2 / 5 && gridPositions[i].z < height * 2 / 5)
+                {
+                    if (lists[0] == null)
+                        lists[0] = new List<int>();
+                    lists[0].Add(i);
+                }
+                if (gridPositions[i].x > width * 3 / 5 && gridPositions[i].z > height * 3 / 5)
+                {
+                    if (lists[1] == null)
+                        lists[1] = new List<int>();
+                    lists[1].Add(i);
+                }
+                if (gridPositions[i].x < width * 2 / 5 && gridPositions[i].z > height * 3 / 5)
+                {
+                    if (lists[2] == null)
+                        lists[2] = new List<int>();
+                    lists[2].Add(i);
+                }
+                if (gridPositions[i].x > width * 3 / 5 && gridPositions[i].z < height * 2 / 5)
+                {
+                    if (lists[3] == null)
+                        lists[3] = new List<int>();
+                    lists[3].Add(i);
+                }
+            }
+        }
+
+        for (int i = 0; i < 4; i++)
+        {
+            if (lists[i] == null)
+                continue;
+            int index = Random.Range(0, lists[i].Count);
+            Instantiate(torch, new Vector3(gridPositions[lists[i][index]].x, 0.5f, gridPositions[lists[i][index]].z), Quaternion.Euler(90, 0, 0));
+            removeList.Add(gridPositions[lists[i][index]]);
+        }
+
+
+        for (int i = 0; i < gridPositions.Count; i++)
+        {
+            for(int j=0; j< removeList.Count; j++)
+            {
+                if(removeList[j] == gridPositions[i])
+                {
+                    gridPositions.RemoveAt(i);
+                    removeList.RemoveAt(j);
+                }
+            }
+        }
+    }
+
     void LayoutPlayer()
     {
         //player
@@ -416,10 +478,11 @@ public class BoardManager : MonoBehaviour
         LayoutPlayer();//放置玩家和出口的位置
         LayoutObjectAtRandom(PotTiles, potMin, potMax);
         LayoutObjectAtRandom(RockTiles, rockMin, rockMax);
-        LayoutObjectAtRandomWithSpace(torchTiles, torchMin, torchMax, 5);
+        //LayoutObjectAtRandomWithSpace(torchTiles, torchMin, torchMax, 4);
+        LayoutTorch();
         int enemyCount = level;
         //LayoutObjectAtRandom(enemyTiles, enemyCount, enemyCount+1);
-        LayoutObjectAtRandomWithSpace(enemyTiles, enemyCount, enemyCount + 1, 4);
+        LayoutObjectAtRandomWithSpace(enemyTiles, enemyCount, enemyCount + 1, 3);
 
         navMeshSurface.BuildNavMesh();
     }
@@ -448,6 +511,19 @@ public class BoardManager : MonoBehaviour
 
 
         navMeshSurface.BuildNavMesh();
+    }
+
+    int TilesInArea(int x, int y)
+    {
+        int sum = 0;
+        if (x<width-1 && x>-1 && y<height-1 && y>-1 && !tileMap[x,y].flag && tileMap[x, y].type==FLOOR)
+        {
+            tileMap[x, y].flag = true;
+            sum += TilesInArea(x + 1, y) + TilesInArea(x - 1, y) + TilesInArea(x, y + 1) + TilesInArea(x, y - 1) + 1;
+            return sum;
+        }
+        else
+            return sum;
     }
 
     void GenerateTileMap()
@@ -504,26 +580,32 @@ public class BoardManager : MonoBehaviour
                 }
 
                 int index = Random.Range(0, doorTiles.Count);
-                int enterX;
-                int exitX;
 
                 tileMap[doorTiles[index].positionX, doorTiles[index].positionY].type = ENTER;
                 enterPositon = new Vector3(doorTiles[index].positionX, 0.0f, doorTiles[index].positionY);
-                enterX = doorTiles[index].positionX;
+                Vector2 enterV = new Vector2(doorTiles[index].positionX, doorTiles[index].positionY);
                 doorTiles.RemoveAt(index);
 
                 index = Random.Range(0, doorTiles.Count);
-                exitX = doorTiles[index].positionX;
-                while (Mathf.Abs(enterX - exitX) < 6.1f)
+
+                int flag=0;
+                float max = 0;
+                for (int i=0;i< doorTiles.Count;i++)
                 {
-                    doorTiles.RemoveAt(index);
-                    index = Random.Range(0, doorTiles.Count - 1);
-                    exitX = doorTiles[index].positionX;
+                    Vector2 exitV = new Vector2(doorTiles[i].positionX, doorTiles[i].positionY);
+                    if ((enterV - exitV).magnitude > max)
+                    {
+                        max = (enterV - exitV).magnitude;
+                        flag = i;
+                    }
                 }
-                tileMap[doorTiles[index].positionX, doorTiles[index].positionY].type = EXIT;
-                exitPositon = new Vector3(doorTiles[index].positionX, 0.0f, doorTiles[index].positionY);
+
+                tileMap[doorTiles[flag].positionX, doorTiles[flag].positionY].type = EXIT;
+                exitPositon = new Vector3(doorTiles[flag].positionX, 0.0f, doorTiles[flag].positionY);
             }
         }
+
+        Debug.Log(floorNum+ "   "+ TilesInArea(width/2,height/2));
     }
 
     void NavMeshSetup()
@@ -534,12 +616,14 @@ public class BoardManager : MonoBehaviour
     struct Tile
     {
         public int type;
+        public bool flag;
         public int positionX;
         public int positionY;
 
         public Tile(int x, int y, int t)
         {
             type = t;
+            flag = false;
             positionX =x;
             positionY = y;
         }
@@ -574,11 +658,15 @@ public class BoardManager : MonoBehaviour
             {1,0,0,0,0,0,0,0,1,1,1,1,1},
             {1,1,1,1,1,1,1,1,1,1,1,1,1},
         };
+
+        floorNum = 199;
     }
 
     void GenerateMap()
     {
         map = new int[width, height];
+        floorNum = 0;
+
         RandomFillMap();
 
         for (int i = 0; i < 5; i++)
@@ -711,7 +799,15 @@ public class BoardManager : MonoBehaviour
                 }
                 else
                 {
-                    map[x, y] = (pseudoRandom.Next(0, 100) < randomFillPercent) ? 1 : 0;
+                    if (pseudoRandom.Next(0, 100) < randomFillPercent)
+                    {
+                        map[x, y] = 1;
+                    }
+                    else
+                    {
+                        map[x, y] = 0;
+                        floorNum++;
+                    }
                 }
             }
         }
@@ -725,10 +821,16 @@ public class BoardManager : MonoBehaviour
             {
                 int neighbourWallTiles = GetSurroundingWallCount(x, y);
 
-                if (neighbourWallTiles > 4)
+                if (neighbourWallTiles > 4 && map[x, y] == 0)
+                {
                     map[x, y] = 1;
-                else if (neighbourWallTiles < 4)
+                    floorNum--;
+                }
+                else if (neighbourWallTiles < 4 && map[x, y] == 1)
+                {
                     map[x, y] = 0;
+                    floorNum++;
+                }
 
             }
         }

@@ -77,6 +77,7 @@ MonoBehaviour:
   - {fileID: 7489798276851730335, guid: 60a1a482359df034fbfe29ca2cfbf731, type: 3}
   torchTiles:
   - {fileID: 298924405959160450, guid: 34560e865f5374e4f9853a7614aa49b7, type: 3}
+  torch: {fileID: 298924405959160450, guid: 34560e865f5374e4f9853a7614aa49b7, type: 3}
   outerWall: {fileID: 9117066716094040641, guid: b17ecbcda7b98ba4097b448234ab4207,
     type: 3}
   outerWallW: {fileID: 8083290898784349215, guid: d1830ec939fef314a9edd6cf011d627a,
