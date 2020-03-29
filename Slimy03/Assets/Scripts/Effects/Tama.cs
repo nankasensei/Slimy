@@ -46,8 +46,6 @@ public class Tama : MonoBehaviour
                 }
                 if (other.CompareTag("unbreakableItem"))
                 {
-                    other.GetComponent<Item>().Buff();
-                    Destroy(gameObject);
                 }
                 if (other.CompareTag("OuterWall") || other.CompareTag("Exit") || other.CompareTag("Enter"))
                 {

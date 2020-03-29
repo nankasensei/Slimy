@@ -381,7 +381,7 @@ public class BoardManager : MonoBehaviour
 
         for (int i = 0; i < gridPositions.Count; i++)
         {
-            if(gridPositions[i].z + 1 != exitPositon.z && gridPositions[i].z - 1 != exitPositon.z)
+            if(gridPositions[i].z + 1 != exitPositon.z && gridPositions[i].z - 1 != exitPositon.z && gridPositions[i].z + 2 != exitPositon.z && gridPositions[i].z - 2 != exitPositon.z)
             {
                 if (gridPositions[i].x < width * 2 / 5 && gridPositions[i].z < height * 2 / 5)
                 {
@@ -470,8 +470,27 @@ public class BoardManager : MonoBehaviour
 
     public void SetupScene(int level)
     {
-        GenerateMap();  //fill a int[] with 0 and 1
-        GenerateTileMap();  //fill a Tile[] with FLOOR, OUTERWALL and OUTEROUTERWALL
+        int x = 0, y = 0;
+
+        while (floorNum != TilesInArea(x, y) || floorNum == 0)  //非連結マップの防止
+        {
+            GenerateMap();  //fill a int[] with 0 and 1
+            GenerateTileMap();  //fill a Tile[] with FLOOR, OUTERWALL and OUTEROUTERWALL
+            for (int i=0; i < width; i++)
+            {
+                for (int j=0; j < height; j++)
+                {
+                    if (map[i, j] == 0)
+                    {
+                        x = i;
+                        y = j;
+                        i = width;
+                        j = height;
+                    }
+                }
+            }
+        }
+
         BoardSetup();
         CameraSetup();
         InitialiseList();
@@ -515,6 +534,9 @@ public class BoardManager : MonoBehaviour
 
     int TilesInArea(int x, int y)
     {
+        if (tileMap == null)
+            return 0;
+
         int sum = 0;
         if (x<width-1 && x>-1 && y<height-1 && y>-1 && !tileMap[x,y].flag && tileMap[x, y].type==FLOOR)
         {
@@ -604,8 +626,6 @@ public class BoardManager : MonoBehaviour
                 exitPositon = new Vector3(doorTiles[flag].positionX, 0.0f, doorTiles[flag].positionY);
             }
         }
-
-        Debug.Log(floorNum+ "   "+ TilesInArea(width/2,height/2));
     }
 
     void NavMeshSetup()

@@ -7,6 +7,6 @@ public class BrokenStone : Item
     public override void Buff()
     {
         PlayerController player = GameObject.Find("Player").GetComponent<PlayerController>();
-        player.SetDef(1.0f, 8.0f);
+        player.SetDef(1.0f, 1000.0f);
     }
 }

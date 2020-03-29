@@ -11,6 +11,7 @@ public static class SlimyEvents
     public static LevelStartEvent levelStartEvent = new LevelStartEvent();
     public static GameClearEvent gameClearEvent = new GameClearEvent();
     public static GameRestartEvent gameRestartEvent = new GameRestartEvent();
+    public static ModeSwitchEvent modeSwitchEvent = new ModeSwitchEvent();
 }
 
 public class HitEvent : UnityEvent<HitEventData> { }
@@ -53,3 +54,5 @@ public class GameClearEvent : UnityEvent { }
 public class LevelStartEvent : UnityEvent{}
 
 public class GameRestartEvent : UnityEvent {}
+
+public class ModeSwitchEvent : UnityEvent { }

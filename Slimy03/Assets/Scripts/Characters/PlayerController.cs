@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour
     public float defence;
     public float attack;
     public bool isAlive;
+    public int mode; //0=Normal, 1=EX
 
     [Header("Player attributes")]
     public float MOVEMENT_BASE_SPEED = 1.0f;
@@ -27,6 +28,7 @@ public class PlayerController : MonoBehaviour
     public Rigidbody rb;
     public Animator animator;
     public SpriteRenderer spriteRenderer;
+    public Transform spriteTransform;
     public AudioSource audioSource;
     public DS4Controllor ds4;
     public AudioClip walking;
@@ -39,11 +41,13 @@ public class PlayerController : MonoBehaviour
     public float attackingVolume;
     public float hittingVolume;
     public float dyingVolume;
+    public Transform effectsTrans;
 
     [Header("Prefabs")]
     public GameObject slimyTama;
     public GameObject slimyTamaEX;
-    public ParticleSystem effect;
+    public GameObject slimyTamaLarge;
+    public GameObject effectPrefab;
 
     private float enterExitY;
     private float exitExitY;
@@ -67,6 +71,7 @@ public class PlayerController : MonoBehaviour
         movementSpeedOffset = 1f;
         tamaPrefab = slimyTama;
         StateSetup();
+        mode = 0;
     }
 
     // Update is called once per frame
@@ -102,38 +107,49 @@ public class PlayerController : MonoBehaviour
         endOfAiming = Input.GetMouseButtonUp(0);
     }
 
-    public void SetHp(float offset)
+    public IEnumerator SetHitpoints(float offset, float time)
     {
         hp += offset;
-        if(offset > 0)
+        StateSetup();
+
+        if (offset > 0)
         {
-            effect.Stop(); // Cannot set duration whilst Particle System is playing
+            GameObject effectObject = Instantiate(effectPrefab, effectsTrans);
+            ParticleSystem effect = effectObject.GetComponent<ParticleSystem>();
 
             var main = effect.main;
-            main.duration = 1.0f;
+            main.duration = time;
             main.startColor = new Color(0.31f, 0.95f, 0.66f, 1);
-
             effect.Play();
+
+            yield return new WaitForSeconds(time);
+            Destroy(effectObject);
         }
-        StateSetup();
+    }
+
+        public void SetHp(float offset)
+    {
+        StartCoroutine(SetHitpoints(offset, 2.0f));
     }
 
     public IEnumerator SetDefence(float offset, float time)
     {
+        float preDef = defence;
         defence = DEF + offset;
         StateSetup();
 
-        if(offset > 0)
+        if(offset > 0 && preDef <= DEF)
         {
-            effect.Stop(); // Cannot set duration whilst Particle System is playing
+            GameObject effectObject = Instantiate(effectPrefab, effectsTrans);
+            ParticleSystem effect = effectObject.GetComponent<ParticleSystem>();
 
             var main = effect.main;
-            main.duration = 8.0f;
+            main.duration = time;
             main.startColor = new Color(0.943f, 0.524f, 0.302f, 1);
-
             effect.Play();
 
             yield return new WaitForSeconds(time);
+            Destroy(effectObject);
             defence = DEF;
             StateSetup();
         }
@@ -146,20 +162,23 @@ public class PlayerController : MonoBehaviour
 
     public IEnumerator SetAttack(float offset, float time)
     {
+        float preAtk = attack;
         attack = ATK + offset;
         StateSetup();
 
-        if (offset > 0)
+        if (offset > 0 && preAtk <= ATK)
         {
-            effect.Stop(); // Cannot set duration whilst Particle System is playing
+            GameObject effectObject = Instantiate(effectPrefab, effectsTrans);
+            ParticleSystem effect = effectObject.GetComponent<ParticleSystem>();
 
             var main = effect.main;
-            main.duration = 8.0f;
+            main.duration = time;
             main.startColor = new Color(0.6821f, 0, 1, 1);
 
             effect.Play();
 
             yield return new WaitForSeconds(time);
+            Destroy(effectObject);
             defence = ATK;
             StateSetup();
         }
@@ -269,6 +288,25 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void ChangeTama(int index)
+    {
+        switch(index)
+        {
+            //normal
+            case 0:
+                tamaPrefab = slimyTama;
+                break;
+            //large
+            case 1:
+                tamaPrefab = slimyTamaLarge;
+                break;
+            //EX
+            case 2:
+                tamaPrefab = slimyTamaEX;
+                break;
+        }
+    }
+
     void TakeDamage(HitEventData data)
     {
         if(data.victim == gameObject && hp > 0)
@@ -331,7 +369,9 @@ public class PlayerController : MonoBehaviour
 
             eatArmCount++;
             if (eatArmCount == 2)
-                tamaPrefab = slimyTamaEX;
+            {
+                mode = 1;
+            }
             other.gameObject.GetComponent<BossArm>().Gone();
         }
 

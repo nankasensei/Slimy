@@ -15,7 +15,7 @@ public class LittleDemon : Enemy
     public Transform attackPos;
     public Transform attackAnchor;
     public LayerMask playerLayer;
-    private float buffHp;
+    public float buffHp;
     private Timer mainTimer;
 
     private void Awake()
@@ -36,7 +36,6 @@ public class LittleDemon : Enemy
         isInvokeSet = false;
         hp = HP_MAX;
         attackRadius = 0.4f;
-        buffHp = 15;
         mainTimer = new Timer();
         mainTimer.Start();
         attackTimer = new Timer();
@@ -85,7 +84,7 @@ public class LittleDemon : Enemy
                 }
 
                 //start attacking
-                if (agent.desiredVelocity.magnitude < 0.1f && (GameObject.Find("Player").transform.position - transform.position).magnitude < 3.0f)
+                if (agent.desiredVelocity.magnitude < 0.1f && (GameObject.Find("Player").transform.position - transform.position).magnitude < 3.0f && isAlive)
                 {
                     if (attackTimer.elapasedTime > 2)
                     {

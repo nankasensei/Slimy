@@ -148,9 +148,9 @@ public class Boss : MonoBehaviour
 
     void Summon()
     {
-        for(int i = 0; i < 5; i++)
+        for(int i = 0; i < 4; i++)
         {
-            GameObject newObject = Instantiate(LittleDemon, new Vector3(5 + 3*i, 0, 4), Quaternion.Euler(90, 0, 0));
+            GameObject newObject = Instantiate(LittleDemon, new Vector3(7 + 3*i, 0, 4), Quaternion.Euler(90, 0, 0));
             GameManager.instance.enemies.Add(newObject);
         }
     }

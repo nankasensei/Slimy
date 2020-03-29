@@ -12,7 +12,7 @@ public class EnemyRat : Enemy
     public Transform attackPos;
     public Transform attackAnchor;
     public LayerMask playerLayer;
-    private float buffHp;
+    public float buffHp;
     private Timer mainTimer;
 
     private void Awake()
@@ -33,7 +33,6 @@ public class EnemyRat : Enemy
         isInvokeSet = false;
         hp = HP_MAX;
         attackRadius = 0.4f;
-        buffHp = 10;
         attackTimer = new Timer();
         mainTimer = new Timer();
         mainTimer.Start();
@@ -83,7 +82,7 @@ public class EnemyRat : Enemy
             animator.SetFloat("Magnitude", agent.desiredVelocity.magnitude);
 
             //start attacking
-            if (agent.desiredVelocity.magnitude < 0.1f && (GameObject.Find("Player").transform.position - transform.position).magnitude < 3.0f)
+            if (agent.desiredVelocity.magnitude < 0.1f && (GameObject.Find("Player").transform.position - transform.position).magnitude < 3.0f && isAlive)
             {
                 if (attackTimer.elapasedTime > 2)
                 {

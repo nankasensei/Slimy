@@ -64,10 +64,19 @@ public class DS4Controllor : MonoBehaviour
     public Transform anchor;
     public SpriteRenderer anchorSprite;
 
+    private const int maxTouches = 2;
     private Queue<Touch> unusedTouches;
     private bool isFlashing;
     private GUIStyle textStyle;
     private int controlMode = 0;
+    private bool touchStart = false;
+    private bool isTamaLargePermited = false;
+    private int fingerId = 0;
+    private Vector2 fingerStartPos;
+    private float chargeTime = 3f;
+
+    private List<Touch> touches;
+    private Timer chargeTimer;
 
     private Player player { get { return ReInput.players.GetPlayer(playerId); } }
 
@@ -78,6 +87,8 @@ public class DS4Controllor : MonoBehaviour
         // Get the first DS4 found assigned to the Player
         ds4 = GetFirstDS4(player);
         controlMode = GameManager.instance.GetComponent<GameManager>().controlMod;
+        InitializeTouchObjects();
+        chargeTimer = new Timer();
     }
 
     private void Update()
@@ -85,63 +96,110 @@ public class DS4Controllor : MonoBehaviour
         if (!ReInput.isReady) return;
 
         float X = 0, Y = 0;
+
         if (ds4 != null)
         {
-            if(controlMode == 1)
+            if(controlMode == 0 || controlMode == 1)
             {
-                X = -Input.GetAxis("Joy1Axis1");
-                Y = Input.GetAxis("Joy1Axis2");
-            }
-            else
-            {
-                X = ds4.GetOrientation().z;
-                Y = -ds4.GetOrientation().x;
-            }
+                if (controlMode == 1)
+                {
+                    X = -Input.GetAxis("Joy1Axis1");
+                    Y = Input.GetAxis("Joy1Axis2");
+                }
+                else
+                {
+                    X = ds4.GetOrientation().z;
+                    Y = -ds4.GetOrientation().x;
+                }
 
-            // Set the model's rotation to match the controller's
-            if(new Vector2(X,Y).magnitude < 0.07f)
-            {
-                X = 0;
-                Y = -1;
-                anchorSprite.enabled = false;
+                // set anchor
+                if (new Vector2(X, Y).magnitude < 0.05f)
+                {
+                    X = 0;
+                    Y = -1;
+                    anchorSprite.enabled = false;
+                }
+                else
+                {
+                    anchorSprite.enabled = true;
+                }
+                anchor.LookAt(anchor.position + new Vector3(X, 0, Y));
+
+                //set trigger
+                if (Input.GetKeyDown("joystick button 7")) //trigger
+                {
+                    chargeTimer.Start();
+                }
+                if (Input.GetKeyUp("joystick button 7")) //trigger
+                {
+                    if(chargeTimer.isStart && chargeTimer.elapasedTime> chargeTime && isTamaLargePermited)
+                    {
+                        pc.ChangeTama(1);
+                    }
+                    else
+                    {
+                        if (pc.mode == 0)
+                            pc.ChangeTama(0);
+                        else if (pc.mode == 1)
+                            pc.ChangeTama(2);
+                    }
+
+                    pc.ShootWithGamepad(-X, -Y);
+                    chargeTimer.Stop();
+                    isTamaLargePermited = false;
+                }
             }
-            else
+            else if(controlMode == 2)
             {
-                anchorSprite.enabled = true;
+                HandleTouchpad(ds4);
             }
-            anchor.LookAt(anchor.position + new Vector3(X, 0, Y));
         }
 
-        if (Input.GetKeyDown("joystick button 0")) //square
+        if (chargeTimer.isStart)
         {
-            ResetOrientation();
+            float x = Random.Range(-0.05f, 0.05f);
+            float y = Random.Range(-0.05f, 0.05f);
+
+            if(chargeTimer.elapasedTime > 0.3f)
+            {
+                if (pc.hp >= 150)
+                    isTamaLargePermited = true;
+
+                if (isTamaLargePermited)
+                {
+                    if (chargeTimer.elapasedTime <= chargeTime)
+                    {
+                        pc.SetHp(-30 * Time.deltaTime);
+                        Vibrate(0, 0.5f, 0.1f);
+                        Vibrate(1, 0.5f, 0.1f);
+                        pc.spriteTransform.localPosition = new Vector3(x, y, 0);
+                    }
+                    if (chargeTimer.elapasedTime > chargeTime && chargeTimer.elapasedTime < chargeTime + 0.2f)
+                    {
+                        Vibrate(0, 1, 0.1f);
+                        Vibrate(1, 1, 0.1f);
+                        pc.spriteTransform.localPosition = new Vector3(x, y, 0);
+                    }
+                    if (chargeTimer.elapasedTime > chargeTime + 0.2f)
+                        pc.spriteTransform.localPosition = new Vector3(x, y, 0);
+                }
+                else
+                {
+                    if (chargeTimer.elapasedTime <= chargeTime/2)
+                    {
+                        Vibrate(0, 0.5f, 0.1f);
+                        Vibrate(1, 0.5f, 0.1f);
+                        pc.spriteTransform.localPosition = new Vector3(x, y, 0);
+                    }
+                }
+            }
         }
-        if (Input.GetKeyDown("joystick button 1")) //X
-        {
-        }
-        if (Input.GetKeyDown("joystick button 2")) //circlr
-        {
-        }
-        if (Input.GetKeyDown("joystick button 3")) //triangle
-        {
-        }
+
         if (Input.GetKeyDown("joystick button 5")) //R1
         {
-            if (controlMode == 1)
-            {
-                controlMode = 0;
-                GameManager.instance.GetComponent<GameManager>().controlMod = 0;
-
-            }
-            else
-            {
-                controlMode = 1;
-                GameManager.instance.GetComponent<GameManager>().controlMod = 1;
-            }
-        }
-        if (Input.GetKeyUp("joystick button 7")) //trigger
-        {
-            pc.ShootWithGamepad(-X, -Y);
+            controlMode = (controlMode + 1) % 3;
+            GameManager.instance.GetComponent<GameManager>().controlMod = controlMode;
+            SlimyEvents.modeSwitchEvent.Invoke();
         }
     }
 
@@ -266,9 +324,118 @@ public class DS4Controllor : MonoBehaviour
         return null;
     }
 
+    private void InitializeTouchObjects()
+    {
+
+        touches = new List<Touch>(maxTouches);
+        unusedTouches = new Queue<Touch>(maxTouches);
+
+        // Setup touch objects
+        for (int i = 0; i < maxTouches; i++)
+        {
+            Touch touch = new Touch();
+            // Create spheres to reprensent touches
+            touch.go = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            touch.go.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+#if UNITY_5_PLUS
+            touch.go.transform.SetParent(transform, true);
+#else
+                touch.go.transform.parent = touchpadTransform;
+#endif
+            touch.go.GetComponent<MeshRenderer>().material.color = i == 0 ? Color.red : Color.green;
+            touch.go.SetActive(false);
+            unusedTouches.Enqueue(touch);
+        }
+    }
+
     private class Touch
     {
         public GameObject go;
         public int touchId = -1;
+    }
+
+    private void HandleTouchpad(IDualShock4Extension ds4)
+    {
+        if(controlMode == 2)
+        {
+            if (!touchStart && ds4.IsTouching(0))
+            {
+                fingerId = ds4.GetTouchId(0);
+                touchStart = true;
+                ds4.GetTouchPosition(0, out fingerStartPos);
+                //Debug.Log("start   " + fingerStartPos);
+
+                chargeTimer.Start();
+            }
+
+            if (!ds4.IsTouchingByTouchId(fingerId) && touchStart)
+            {
+                Touch touch = touches.Find(x => x.touchId == fingerId);
+                touchStart = false;
+
+                Vector2 fingerEndPos, fingerDir;
+                fingerEndPos = new Vector2(touch.go.transform.localPosition.x + 0.5f, touch.go.transform.localPosition.z + 0.5f);
+                fingerDir = new Vector2((fingerEndPos - fingerStartPos).x * 2.25f, (fingerEndPos - fingerStartPos).y); //because the touchpad is not a square but scales from (0,0) to (1,1)
+
+                if (controlMode == 2 && fingerDir.magnitude > 0.15f)
+                {
+                    if (chargeTimer.isStart && chargeTimer.elapasedTime > chargeTime && isTamaLargePermited)
+                    {
+                        pc.ChangeTama(1);
+                    }
+                    else
+                    {
+                        if(pc.mode == 0)
+                            pc.ChangeTama(0);
+                        else if(pc.mode == 1)
+                            pc.ChangeTama(2);
+                    }
+
+                    pc.ShootWithGamepad(fingerDir.x, fingerDir.y);
+                    chargeTimer.Stop();
+                    isTamaLargePermited = false;
+                }
+
+                //Debug.Log("end   " + fingerEndPos);
+            }
+        }
+
+        // Expire old touches first
+        for (int i = touches.Count - 1; i >= 0; i--)
+        {
+            Touch touch = touches[i];
+            if (!ds4.IsTouchingByTouchId(touch.touchId))
+            { // the touch id is no longer valid
+                touch.go.SetActive(false); // disable the game object
+                unusedTouches.Enqueue(touch); // return to the pool
+                touches.RemoveAt(i); // remove from active touches list
+            }
+        }
+
+        // Process new touches
+        for (int i = 0; i < ds4.maxTouches; i++)
+        {
+            if (!ds4.IsTouching(i)) continue;
+            int touchId = ds4.GetTouchId(i);
+            Touch touch = touches.Find(x => x.touchId == touchId); // find the touch with this id
+            if (touch == null)
+            {
+                touch = unusedTouches.Dequeue(); // get a new touch from the pool
+                touches.Add(touch); // add to active touches list
+            }
+            touch.touchId = touchId; // store the touch id
+            //touch.go.SetActive(true); // show the object
+
+            // Get the touch position
+            Vector2 position;
+            ds4.GetTouchPosition(i, out position);
+
+            // Set the new position of the touch
+            touch.go.transform.localPosition = new Vector3(
+                position.x - 0.5f,
+                0.5f + (touch.go.transform.localScale.y * 0.5f),
+                position.y - 0.5f
+            );
+        }
     }
 }

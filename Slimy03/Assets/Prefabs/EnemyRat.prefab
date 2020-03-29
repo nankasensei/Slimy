@@ -434,6 +434,7 @@ MonoBehaviour:
   playerLayer:
     serializedVersion: 2
     m_Bits: 256
+  buffHp: 30
 --- !u!136 &3869876719724636308
 CapsuleCollider:
   m_ObjectHideFlags: 0
