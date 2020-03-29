@@ -63,6 +63,7 @@ public class DS4Controllor : MonoBehaviour
     public PlayerController pc;
     public Transform anchor;
     public SpriteRenderer anchorSprite;
+    public Vector2 oriVec;
 
     private const int maxTouches = 2;
     private Queue<Touch> unusedTouches;
@@ -99,7 +100,9 @@ public class DS4Controllor : MonoBehaviour
 
         if (ds4 != null)
         {
-            if(controlMode == 0 || controlMode == 1)
+            oriVec = new Vector2(-ds4.GetOrientation().z, ds4.GetOrientation().x);
+
+            if (controlMode == 0 || controlMode == 1)
             {
                 if (controlMode == 1)
                 {
@@ -160,7 +163,7 @@ public class DS4Controllor : MonoBehaviour
             float x = Random.Range(-0.05f, 0.05f);
             float y = Random.Range(-0.05f, 0.05f);
 
-            if(chargeTimer.elapasedTime > 0.3f)
+            if(chargeTimer.elapasedTime > 0.5f)
             {
                 if (pc.hp >= 150)
                     isTamaLargePermited = true;
@@ -200,6 +203,11 @@ public class DS4Controllor : MonoBehaviour
             controlMode = (controlMode + 1) % 3;
             GameManager.instance.GetComponent<GameManager>().controlMod = controlMode;
             SlimyEvents.modeSwitchEvent.Invoke();
+        }
+
+        if (Input.GetKeyDown("joystick button 0")) //square
+        {
+            ResetOrientation();
         }
     }
 

@@ -93,7 +93,23 @@ public class PlayerController : MonoBehaviour
 
     void ProcessInputs()
     {
-        movementDirection = new Vector3(Input.GetAxis("Horizontal"),0.0f, Input.GetAxis("Vertical"));
+        if(GameManager.instance.GetComponent<GameManager>().controlMod == 0 || GameManager.instance.GetComponent<GameManager>().controlMod == 1)
+        {
+            movementDirection = new Vector3(Input.GetAxis("Horizontal"), 0.0f, Input.GetAxis("Vertical"));
+        }
+        else if(GameManager.instance.GetComponent<GameManager>().controlMod == 2)
+        {
+            if(ds4.oriVec.magnitude > 0.05f)
+            {
+                movementDirection = new Vector3(ds4.oriVec.x * 5, 0.0f, ds4.oriVec.y * 5);
+            }
+            else
+            {
+                movementDirection = Vector2.zero;
+            }
+            //Debug.Log(movementDirection.x + "  " + movementDirection.z);
+        }
+
         movementSpeed = Mathf.Clamp(movementDirection.magnitude, 0.0f, 1.0f);
         movementDirection.Normalize();
 

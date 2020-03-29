@@ -21,7 +21,7 @@ MonoBehaviour:
   m_ShowMode: 4
   m_Title: 
   m_RootView: {fileID: 2}
-  m_MinSize: {x: 950, y: 544}
+  m_MinSize: {x: 950, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
 --- !u!114 &2
 MonoBehaviour:
@@ -111,10 +111,10 @@ MonoBehaviour:
     y: 30
     width: 1856
     height: 987
-  m_MinSize: {x: 683, y: 494}
-  m_MaxSize: {x: 14004, y: 14044}
+  m_MinSize: {x: 679, y: 344}
+  m_MaxSize: {x: 12004, y: 8044}
   vertical: 0
-  controlID: 55
+  controlID: 105
 --- !u!114 &6
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -136,10 +136,10 @@ MonoBehaviour:
     y: 0
     width: 1364
     height: 987
-  m_MinSize: {x: 406, y: 494}
-  m_MaxSize: {x: 10002, y: 14044}
+  m_MinSize: {x: 404, y: 344}
+  m_MaxSize: {x: 8004, y: 8044}
   vertical: 1
-  controlID: 56
+  controlID: 34
 --- !u!114 &7
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -161,10 +161,10 @@ MonoBehaviour:
     y: 0
     width: 1364
     height: 620
-  m_MinSize: {x: 406, y: 222}
-  m_MaxSize: {x: 8006, y: 4022}
+  m_MinSize: {x: 404, y: 222}
+  m_MaxSize: {x: 8004, y: 4022}
   vertical: 0
-  controlID: 57
+  controlID: 35
 --- !u!114 &8
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -184,8 +184,8 @@ MonoBehaviour:
     y: 0
     width: 242
     height: 620
-  m_MinSize: {x: 202, y: 222}
-  m_MaxSize: {x: 4002, y: 4022}
+  m_MinSize: {x: 200, y: 200}
+  m_MaxSize: {x: 4000, y: 4000}
   m_ActualView: {fileID: 13}
   m_Panes:
   - {fileID: 13}
@@ -239,14 +239,14 @@ MonoBehaviour:
     y: 620
     width: 1364
     height: 367
-  m_MinSize: {x: 232, y: 272}
-  m_MaxSize: {x: 10002, y: 10022}
-  m_ActualView: {fileID: 17}
+  m_MinSize: {x: 102, y: 122}
+  m_MaxSize: {x: 4002, y: 4022}
+  m_ActualView: {fileID: 18}
   m_Panes:
   - {fileID: 17}
   - {fileID: 18}
-  m_Selected: 0
-  m_LastSelected: 1
+  m_Selected: 1
+  m_LastSelected: 0
 --- !u!114 &11
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -266,8 +266,8 @@ MonoBehaviour:
     y: 0
     width: 492
     height: 987
-  m_MinSize: {x: 277, y: 72}
-  m_MaxSize: {x: 4002, y: 4022}
+  m_MinSize: {x: 275, y: 50}
+  m_MaxSize: {x: 4000, y: 4000}
   m_ActualView: {fileID: 19}
   m_Panes:
   - {fileID: 19}
@@ -384,9 +384,9 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: 4a440000
-      m_LastClickedID: 17482
-      m_ExpandedIDs: 5a8bfbff708bfbffdea4fbffe2a4fbfff8a4fbff8ebffbffa4bffbffa6bffbff44d9fbffe6f2fbfff40dfcff0a0efcff0c0efcff9443fcffde5dfcfff45dfcffa077fcffb677fcfff0abfcff06acfcff8ec5fcffa4c5fcffd8e0fcffeee0fcff9afafcffb0fafcff8a78fdffcc90fdff0291fdff2091fdff562effff702effffaa2effffc42effff9a45ffffd045ffffee45ffff5295ffff76fbffff
+      m_SelectedIDs: 3c2d0000
+      m_LastClickedID: 0
+      m_ExpandedIDs: 76fbffff
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -859,20 +859,20 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Scripts/Items
+    - Assets/Rewired/Examples/DualShock4SpecialFeatures/Scripts
   m_ViewMode: 1
   m_StartGridSize: 57
   m_LastFolders:
-  - Assets/Scripts/Items
+  - Assets/Rewired/Examples/DualShock4SpecialFeatures/Scripts
   m_LastFoldersGridSize: 57
   m_LastProjectPath: E:\Documents\GitHub\Slimy\Slimy03
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 8}
-    m_SelectedIDs: 1a400000
-    m_LastClickedID: 16410
-    m_ExpandedIDs: 00000000e42f0000f42f00001a320000a23a000000ca9a3b
+    scrollPos: {x: 0, y: 175}
+    m_SelectedIDs: 34370000
+    m_LastClickedID: 14132
+    m_ExpandedIDs: 00000000e42f0000f42f00001a320000aa3a000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -925,8 +925,8 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_ListAreaState:
-    m_SelectedInstanceIDs: 
-    m_LastClickedInstanceID: 0
+    m_SelectedInstanceIDs: 3c2d0000
+    m_LastClickedInstanceID: 11580
     m_HadKeyboardFocusLastEvent: 1
     m_ExpandedInstanceIDs: c6230000be2f0000604700001e5200006a74000000360000be3500004a6c000076350000c0680000b430000000000000
     m_RenameOverlay:
