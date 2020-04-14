@@ -145,6 +145,8 @@ public class DS4Controllor : MonoBehaviour
                             pc.ChangeTama(0);
                         else if (pc.mode == 1)
                             pc.ChangeTama(2);
+                        else if (pc.mode == 2)
+                            pc.ChangeTama(3);
                     }
 
                     pc.ShootWithGamepad(-X, -Y);
@@ -397,6 +399,8 @@ public class DS4Controllor : MonoBehaviour
                             pc.ChangeTama(0);
                         else if(pc.mode == 1)
                             pc.ChangeTama(2);
+                        else if (pc.mode == 2)
+                            pc.ChangeTama(3);     
                     }
 
                     pc.ShootWithGamepad(fingerDir.x, fingerDir.y);

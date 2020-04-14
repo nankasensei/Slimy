@@ -37,7 +37,7 @@ public class Enemy : MonoBehaviour
 
             animator.SetTrigger("Hit");
 
-            hp -= data.tama.GetComponent<Tama>().damage * GameObject.Find("Player").GetComponent<PlayerController>().ATK;
+            hp -= data.tama.GetComponent<Tama>().damage * GameObject.Find("Player").GetComponent<PlayerController>().attack;
             hitpoints.localScale = new Vector3(hp / HP_MAX, 1, 1);
 
             audioSource.PlayOneShot(hittingClip, hittingVolume);

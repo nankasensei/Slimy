@@ -13,7 +13,7 @@ public class PlayerController : MonoBehaviour
     public float defence;
     public float attack;
     public bool isAlive;
-    public int mode; //0=Normal, 1=EX
+    public int mode; //0=Normal, 1=EX, 2=Fire
 
     [Header("Player attributes")]
     public float MOVEMENT_BASE_SPEED = 1.0f;
@@ -47,6 +47,7 @@ public class PlayerController : MonoBehaviour
     public GameObject slimyTama;
     public GameObject slimyTamaEX;
     public GameObject slimyTamaLarge;
+    public GameObject slimyTamaFire;
     public GameObject effectPrefab;
 
     private float enterExitY;
@@ -320,6 +321,10 @@ public class PlayerController : MonoBehaviour
             case 2:
                 tamaPrefab = slimyTamaEX;
                 break;
+            //Fire
+            case 3:
+                tamaPrefab = slimyTamaFire;
+                break;
         }
     }
 
@@ -396,6 +401,7 @@ public class PlayerController : MonoBehaviour
             audioSource.PlayOneShot(swallowing, swallowingVolume);
 
             other.gameObject.GetComponent<BossBody>().Buff();
+            mode = 2;
             //other.gameObject.GetComponent<BossBody>().Gone();
             Destroy(GameObject.Find("Boss(Clone)"));
         }

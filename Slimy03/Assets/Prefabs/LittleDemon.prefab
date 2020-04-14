@@ -512,7 +512,7 @@ MonoBehaviour:
   playerLayer:
     serializedVersion: 2
     m_Bits: 256
-  buffHp: 35
+  buffHp: 30
 --- !u!195 &2362461057632855593
 NavMeshAgent:
   m_ObjectHideFlags: 0

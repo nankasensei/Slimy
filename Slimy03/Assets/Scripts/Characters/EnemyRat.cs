@@ -6,7 +6,7 @@ public class EnemyRat : Enemy
 {
 
     //private Vector3 movementDirection;
-    private const float ATK = 5;
+    private const float ATK = 30;
     private float attackRadius;
     private Timer attackTimer;
     public Transform attackPos;

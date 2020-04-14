@@ -373,7 +373,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movementDirection: {x: 0, y: 0, z: 0}
-  movementSpeed: 0
+  movementSpeed: 0.8
   hp: 0
   defence: 0
   attack: 0
@@ -402,13 +402,14 @@ MonoBehaviour:
   hittingVolume: 1
   dyingVolume: 1
   effectsTrans: {fileID: 310125948651009964}
-  slimyTama: {fileID: 5372143973830659459, guid: 56682f44f67e9e549b2c91463549c1d0,
+  slimyTama: {fileID: 4367297537809435418, guid: a52854cb5c4486a458e7f2b6fd1f0700,
     type: 3}
-  slimyTamaEX: {fileID: 4367297537809435418, guid: a52854cb5c4486a458e7f2b6fd1f0700,
+  slimyTamaEX: {fileID: 5372143973830659459, guid: 56682f44f67e9e549b2c91463549c1d0,
     type: 3}
   slimyTamaLarge: {fileID: 1549214370340973324, guid: 91e3c3632f4cee840ba5fad17ab3d2aa,
     type: 3}
-  effect: {fileID: 0}
+  slimyTamaFire: {fileID: 5372143973830659459, guid: f2c3d710f41399e4a857fe3ef7372cc2,
+    type: 3}
   effectPrefab: {fileID: 2954289011858146065, guid: ba3c0b12ddf3ca54b86b80e12038abfa,
     type: 3}
 --- !u!114 &5355918958393297689
@@ -427,6 +428,7 @@ MonoBehaviour:
   pc: {fileID: 3235989013604411369}
   anchor: {fileID: 7767848923109502892}
   anchorSprite: {fileID: 2800930127963747168}
+  oriVec: {x: 0, y: 0}
 --- !u!54 &3235989013604411287
 Rigidbody:
   m_ObjectHideFlags: 0
